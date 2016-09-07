@@ -1,0 +1,14 @@
+secret.properties
+bin
+build
+*.jar
+gradle.properties
+.project
+.classpath
+.idea
+.gradle
+.settings
+*.iml
+*.ipr
+*.iws
+.springBeans

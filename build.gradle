@@ -1,0 +1,84 @@
+buildscript {
+	ext {
+		springBootVersion = '1.3.3.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+apply plugin: 'war'
+
+ext {
+    mainClassName = 'edu.hail.BootApplication'
+}
+
+configurations {
+	providedRuntime
+}
+
+war {
+	baseName = {appName}
+	version = {version}
+}
+
+jar {
+	baseName = {appName}
+	version = {version}
+}
+
+test {
+	def secretKey
+	if (project.hasProperty('secretKey')) {
+		secretKey = "${secretKey}"
+	} else {
+		secretKey = UUID.randomUUID().toString()
+	}
+	createSecretProperties(secretKey)
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('io.jsonwebtoken:jjwt:0.6.0')
+    compile('com.google.code.gson:gson:2.6.2')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+}
+
+bootRun {
+    //deploy static resources in-place
+	addResources = true
+}
+
+task bootDebug(type: org.springframework.boot.gradle.run.BootRunTask) {
+    doFirst() {
+        jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005'
+    }
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.12'
+}
+
+def createSecretProperties(final String key) {
+	def props = new Properties()
+	props.put('jwt.secret', key)
+	
+	def file = new File("${projectDir}/src/main/resources/secret.properties")
+	props.store(file.newWriter(), null)
+}
