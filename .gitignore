@@ -1,7 +1,6 @@
 secret.properties
 bin
 build
-*.jar
 gradle.properties
 .project
 .classpath
