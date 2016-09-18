@@ -1,6 +1,5 @@
 package edu.hail;
 
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;

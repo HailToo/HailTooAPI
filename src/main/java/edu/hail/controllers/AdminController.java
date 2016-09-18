@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     private static final Log log = LogFactory.getLog(AdminController.class);

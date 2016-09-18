@@ -11,3 +11,4 @@ gradle.properties
 *.ipr
 *.iws
 .springBeans
+.DS_Store
