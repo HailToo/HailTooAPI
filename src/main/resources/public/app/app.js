@@ -1,4 +1,9 @@
 Game = {
+	
+	_rooms: [],
+	_hallways: [],
+	_player: null,
+		
 	// Gameboard layout
 	board: {
 		// Dimension of each tile (in pixels)
@@ -29,7 +34,7 @@ Game = {
 		Crafty.c('Suspect', Components.suspect);
 		
 		// Create entity (player object)
-		Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 2);
+		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 2);
 		
 		Game.drawBoard();
 	
@@ -50,29 +55,50 @@ Game = {
 		// Traverse the entire board (per tile)
 		for (var x = 0; x < this.board.width; ++x) {
 			for (var y = 0; y < this.board.height; ++y) {
-//				if (x % 3 === 0 && y % 3 === 0) {
-//					// Draw either a room or hallway
-//					var room = Crafty.e('Room');
-//					room.at(x, y);
-//				}
 				// Draw the edge of the board
 				if (x === 0 || x === this.board.width - 1 || y ===0 || y === this.board.height - 1) {
 					Crafty.e('Edge').at(x, y);
+				} 
+				// Draw rooms starting that the specified tiles
+				else if (y === 3 || y === 12 || y === 20) {
+					if (x === 4 || x === 13 || x === 22) {
+						this._rooms.push(Crafty.e('Room').at(x, y));
+					}
 				}
 			}
 		}
 		
-		//Crafty.e('Room').at(20,20);//.attr({ x: 30, y: 30, w: 50, h: 50 });
-		Crafty.e('Room').at(4, 3);
-		Crafty.e('Room').at(13, 3);
-		Crafty.e('Room').at(22, 3);
+		// Create hallways between rooms
+		for (var i = 0; i < this._rooms.length - 1; ++i) {
+			if (i === 0 || i % 3 !==  2) {
+				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 1]));
+			}
+			if (i < this._rooms.length - 3) {
+				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 3]));
+			}
+		}
+	},
+	
+	makeHallway(room1, room2) {
+		var x = 0, y = 0, w = 0, h = 0;
+		// Determine width/height of hallway
+		if (room1.pos()._x === room2.pos()._x) {
+			// vertical hallway
+			w = 3 * Game.board.tile.width;
+			h = room2.pos()._y - (room1.pos()._y + room1.pos()._h);
+			y = room1.pos()._y + room1.pos()._h;
+			x = room1.pos()._x + Game.board.tile.width;
+		} else if (room1.pos()._y === room2.pos()._y) {
+			// horizontal hallway
+			h = 3 * Game.board.tile.height;
+			w = room2.pos()._x - (room1.pos()._x + room1.pos()._w);
+			x = room1.pos()._x + room1.pos()._w;
+			y = room1.pos()._y + Game.board.tile.height; 
+		} else {
+			return;
+		}
 		
-		Crafty.e('Room').at(4, 12);
-		Crafty.e('Room').at(13, 12);
-		Crafty.e('Room').at(22, 12);
-		
-		Crafty.e('Room').at(4, 20);
-		Crafty.e('Room').at(13, 20);
-		Crafty.e('Room').at(22, 20);
+		// Determine where to draw (tile position)
+		return Crafty.e('Hall').attr({ x: x, y: y, w: w, h: h });
 	}
 }
