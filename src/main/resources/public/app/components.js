@@ -62,8 +62,10 @@ Components = {
 	room: {
 		init: function() {
 			console.log('initializing component: room.');
-			this.requires('Actor, Color')
+			this.requires('Actor, Color, DOM, Solid')
 				.color('rgb(255, 255, 255)');
+			this.w = 5 * Game.board.tile.width;
+			this.h = 5 * Game.board.tile.height;
 		},
 	},
 	

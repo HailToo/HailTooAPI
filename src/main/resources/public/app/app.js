@@ -8,7 +8,7 @@ Game = {
 		},
 		
 		// Dimensions of board (in tiles)
-		width: 30,
+		width: 31,
 		height: 30
 	},
 
@@ -29,7 +29,7 @@ Game = {
 		Crafty.c('Suspect', Components.suspect);
 		
 		// Create entity (player object)
-		Crafty.e('Player').at(5, 5);
+		Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 2);
 		
 		Game.drawBoard();
 	
@@ -46,6 +46,7 @@ Game = {
 	},
 	
 	drawBoard: function() {
+		
 		// Traverse the entire board (per tile)
 		for (var x = 0; x < this.board.width; ++x) {
 			for (var y = 0; y < this.board.height; ++y) {
@@ -60,5 +61,18 @@ Game = {
 				}
 			}
 		}
+		
+		//Crafty.e('Room').at(20,20);//.attr({ x: 30, y: 30, w: 50, h: 50 });
+		Crafty.e('Room').at(4, 3);
+		Crafty.e('Room').at(13, 3);
+		Crafty.e('Room').at(22, 3);
+		
+		Crafty.e('Room').at(4, 12);
+		Crafty.e('Room').at(13, 12);
+		Crafty.e('Room').at(22, 12);
+		
+		Crafty.e('Room').at(4, 20);
+		Crafty.e('Room').at(13, 20);
+		Crafty.e('Room').at(22, 20);
 	}
 }
