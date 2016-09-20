@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import edu.hail.DataGenerator;
+import edu.hail.models.Game;
 import edu.hail.models.GameEntity;
 import edu.hail.models.Room;
 
@@ -23,6 +24,7 @@ public class GameController {
     	db.put("suspects", new HashMap<Integer, GameEntity>());
     	db.put("rooms", new HashMap<Integer, GameEntity>());
     	db.put("weapons", new HashMap<Integer, GameEntity>());
+    	db.put("games", new HashMap<Integer, GameEntity>());
     	
        db.get("suspects").put(1, new GameEntity("Professor Peter Plum"));
        db.get("suspects").put(2, new GameEntity("Miss Josephine Scarlet"));
@@ -78,5 +80,50 @@ public class GameController {
     @RequestMapping(value="/game/title", method = RequestMethod.GET)
     public @ResponseBody String getTitle(HttpServletRequest req) {
         return TITLE;
+    }
+    
+    /**
+     * TODO
+     * Player starts an instance of the game. A GUID is generated to
+     * represent this particular game and is returned to the user.
+     * @param req
+     * @return
+     */
+    public @ResponseBody String startGame(HttpServletRequest req) {
+    	
+    	return null;
+    }
+    
+    /**
+     * TODO
+     * All players desiring to join a specific game (with friends) send
+     * the GUID representing the game to join.
+     * Function checks that the game has an available slot for the player,
+     * @param req
+     * @param gameGuid
+     * @return
+     */
+    public @ResponseBody String joinGame(HttpServletRequest req, @PathVariable String gameGuid) {
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	
+    	// Get the requesting user
+    	
+    	// Add to game
+    	//game.players.add(user);
+    	return null;
+    }
+    
+	/**
+	 * TODO
+	 * Attempt to solve the mystery for a given game.
+	 * @param req
+	 * @param roomName
+	 * @param weaponName
+	 * @param suspectName
+	 * @return
+	 */
+    public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @PathVariable String roomName, @PathVariable String weaponName, @PathVariable String suspectName) {
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	return game.isSolution(roomName, weaponName, suspectName);
     }
 }
