@@ -104,8 +104,11 @@ Components = {
 	hall: {
 		init: function() {
 			console.log('initializing component: hall.');
-			this.requires('Actor, Color')
-				.color('rgb(50, 50, 50)');
+			this.requires('Actor, Color, DOM')
+				.color('rgb(245, 245, 220)')
+				.css({
+					'border': '1px solid black'
+				});
 		},
 	},
 	

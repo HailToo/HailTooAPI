@@ -3,7 +3,9 @@ package edu.hail.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import edu.hail.DataGenerator;
 import edu.hail.models.GameEntity;
+import edu.hail.models.Room;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -29,15 +31,10 @@ public class GameController {
        db.get("suspects").put(5, new GameEntity("Mrs. Patricia Peacock"));
        db.get("suspects").put(6, new GameEntity("Reverend John Green"));
        
-       db.get("rooms").put(1, new GameEntity("Study"));
-       db.get("rooms").put(2, new GameEntity("Hall"));
-       db.get("rooms").put(3, new GameEntity("Lounge"));
-       db.get("rooms").put(4, new GameEntity("Library"));
-       db.get("rooms").put(5, new GameEntity("Billiard Room"));
-       db.get("rooms").put(6, new GameEntity("Dining Room"));
-       db.get("rooms").put(7, new GameEntity("Conservatory"));
-       db.get("rooms").put(8, new GameEntity("Ballroom"));
-       db.get("rooms").put(9, new GameEntity("Kitchen"));
+       List<Room> rooms = DataGenerator.createAllRooms();
+       for(int i = 0; i < rooms.size(); ++i) {
+    	   db.get("rooms").put(i+1, rooms.get(i));
+       }
        
        db.get("weapons").put(1, new GameEntity("Candlestick"));
        db.get("weapons").put(2, new GameEntity("Knife"));

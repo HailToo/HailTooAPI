@@ -36,8 +36,8 @@ Game = {
 		// Create entity (player object)
 		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 2);
 		
+		// Create board (grid, rooms, hallways)
 		Game.drawBoard();
-	
 	},
 	
 	// width of game board (in pixels)
@@ -63,6 +63,16 @@ Game = {
 				else if (y === 3 || y === 12 || y === 20) {
 					if (x === 4 || x === 13 || x === 22) {
 						this._rooms.push(Crafty.e('Room').at(x, y));
+							//.css({ 'background-image': 'url("images/lounge.png")', 'background-size': '100% 100%' }));
+						//TODO send server the room's index, get back the name, the photo url, etc.
+						var roomIndex = this._rooms.length - 1;
+						$.getJSON('api/rooms/' + (roomIndex + 1),
+							null,
+							function(data) {
+								Game._rooms[data.id].setName(data.name);
+								Game._rooms[data.id].css('background-image', 'url("' + data.imageUri + '")');
+								Game._rooms[data.id].css('background-size', '100% 100%');
+							});
 					}
 				}
 			}

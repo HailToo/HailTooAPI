@@ -4,6 +4,8 @@ public class GameEntity {
 	public String name;
 	public String description;
 	
+	public GameEntity() {}
+	
 	public GameEntity(String name) {
 		this.name = name;
 	}

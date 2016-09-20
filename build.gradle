@@ -14,24 +14,20 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
-apply plugin: 'war'
+//apply plugin: 'war'
 
 ext {
     mainClassName = 'edu.hail.BootApplication'
+    appName = 'HailToo'
 }
 
 configurations {
 	providedRuntime
 }
 
-war {
-	baseName = {appName}
-	version = {version}
-}
-
 jar {
-	baseName = {appName}
-	version = {version}
+	baseName = "${appName}"
+	version = "${version}"
 }
 
 test {
@@ -44,8 +40,8 @@ test {
 	createSecretProperties(secretKey)
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
 	mavenCentral()
