@@ -7,6 +7,7 @@ import edu.hail.DataGenerator;
 import edu.hail.models.Game;
 import edu.hail.models.GameEntity;
 import edu.hail.models.Room;
+import edu.hail.models.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -90,7 +91,11 @@ public class GameController {
      * @return
      */
     public @ResponseBody String startGame(HttpServletRequest req) {
-    	
+    	// Create unique game identifier
+    	String gameId = UUID.randomUUID().toString();
+    	Game newGame = new Game();
+    	newGame.name = gameId;
+    	newGame.players.add(new User(req.getUserPrincipal().getName(), ""));
     	return null;
     }
     
@@ -124,6 +129,6 @@ public class GameController {
 	 */
     public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @PathVariable String roomName, @PathVariable String weaponName, @PathVariable String suspectName) {
     	Game game = (Game) db.get("games").get(gameGuid);
-    	return game.isSolution(roomName, weaponName, suspectName);
+    	return game.solve(roomName, weaponName, suspectName);
     }
 }
