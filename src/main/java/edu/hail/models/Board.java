@@ -5,10 +5,14 @@ import java.util.List;
 
 public class Board {
 	
-	private static List<Location> locations = null;
+	private List<Location> locations = null;
 	
-	static {
-		getLocations();
+	public List<Location> getLocations() {
+		return getLocations();
+	}
+	
+	public Board() {
+		locations = generateLocations();
 	}
 	
 	public enum CHARACTER {
@@ -46,11 +50,30 @@ public class Board {
 		public AREA name;
 		public List<AREA> neighbors;
 		public boolean isRoom;
+		public List<User> occupants;
 		
 		public Location(AREA name) {
 			this.name = name;
 			neighbors = new ArrayList<AREA>();
+			occupants = new ArrayList<User>();
 		}
+		
+		public int capacity() {
+			int ret = 1;
+			if (isRoom)
+				return 6;
+			
+			return ret;
+		}
+	}
+	
+	public Location getLocation(AREA area) {
+		for (Location l : locations = generateLocations()) {
+			if (l.name.equals(area))
+				return l;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -58,121 +81,118 @@ public class Board {
 	 * and their direct neighbors (location through their doorways). 
 	 * @return
 	 */
-	public static List<Location> getLocations() {
-		if (locations == null) {
+	public static List<Location> generateLocations() {
+		List<Location> locations = new ArrayList<Location>();
+		
+		for(AREA area : AREA.values()) {
+			Location l = new Location(area);
 			
-			locations = new ArrayList<Location>();
-			
-			for(AREA area : AREA.values()) {
-				Location l = new Location(area);
-				
-				switch (area) {
-				case Study:
-					l.neighbors.add(AREA.HW1);
-					l.neighbors.add(AREA.HW3);
-					l.neighbors.add(AREA.BilliardRoom);
-					l.isRoom = true;
-					break;
-				case Hall:
-					l.neighbors.add(AREA.HW1);
-					l.neighbors.add(AREA.HW2);
-					l.neighbors.add(AREA.HW4);
-					l.isRoom = true;
-					break;
-				case Lounge:
-					l.neighbors.add(AREA.HW2);
-					l.neighbors.add(AREA.HW5);
-					l.neighbors.add(AREA.BilliardRoom);
-					l.isRoom = true;
-					break;
-				case Library:
-					l.neighbors.add(AREA.HW3);
-					l.neighbors.add(AREA.HW6);
-					l.neighbors.add(AREA.HW8);
-					l.isRoom = true;
-					break;
-				case BilliardRoom:
-					l.neighbors.add(AREA.HW4);
-					l.neighbors.add(AREA.HW6);
-					l.neighbors.add(AREA.HW7);
-					l.neighbors.add(AREA.HW9);
-					l.isRoom = true;
-					break;
-				case DiningRoom:
-					l.neighbors.add(AREA.HW5);
-					l.neighbors.add(AREA.HW7);
-					l.neighbors.add(AREA.HW10);
-					l.isRoom = true;
-					break;
-				case Conservatory:
-					l.neighbors.add(AREA.HW8);
-					l.neighbors.add(AREA.HW11);
-					l.neighbors.add(AREA.BilliardRoom);
-					l.isRoom = true;
-					break;
-				case Ballroom:
-					l.neighbors.add(AREA.HW9);
-					l.neighbors.add(AREA.HW11);
-					l.neighbors.add(AREA.HW12);
-					l.isRoom = true;
-					break;
-				case Kitchen:
-					l.neighbors.add(AREA.HW10);
-					l.neighbors.add(AREA.HW12);
-					l.neighbors.add(AREA.BilliardRoom);
-					l.isRoom = true;
-					break;
-				case HW1:
-					l.neighbors.add(AREA.Study);
-					l.neighbors.add(AREA.Hall);
-					break;
-				case HW2:
-					l.neighbors.add(AREA.Hall);
-					l.neighbors.add(AREA.Lounge);
-					break;
-				case HW3:
-					l.neighbors.add(AREA.Study);
-					l.neighbors.add(AREA.Library);
-					break;
-				case HW4:
-					l.neighbors.add(AREA.Hall);
-					l.neighbors.add(AREA.BilliardRoom);
-					break;
-				case HW5:
-					l.neighbors.add(AREA.Lounge);
-					l.neighbors.add(AREA.DiningRoom);
-					break;
-				case HW6:
-					l.neighbors.add(AREA.Library);
-					l.neighbors.add(AREA.BilliardRoom);
-					break;
-				case HW7:
-					l.neighbors.add(AREA.BilliardRoom);
-					l.neighbors.add(AREA.DiningRoom);
-					break;
-				case HW8:
-					l.neighbors.add(AREA.Library);
-					l.neighbors.add(AREA.Conservatory);
-					break;
-				case HW9:
-					l.neighbors.add(AREA.BilliardRoom);
-					l.neighbors.add(AREA.Ballroom);
-					break;
-				case HW10:
-					l.neighbors.add(AREA.DiningRoom);
-					l.neighbors.add(AREA.Kitchen);
-					break;
-				case HW11:
-					l.neighbors.add(AREA.Conservatory);
-					l.neighbors.add(AREA.Ballroom);
-					break;
-				case HW12:
-					l.neighbors.add(AREA.Ballroom);
-					l.neighbors.add(AREA.Kitchen);
-					break;
-				}
-				locations.add(l);
+			switch (area) {
+			case Study:
+				l.neighbors.add(AREA.HW1);
+				l.neighbors.add(AREA.HW3);
+				l.neighbors.add(AREA.BilliardRoom);
+				l.isRoom = true;
+				break;
+			case Hall:
+				l.neighbors.add(AREA.HW1);
+				l.neighbors.add(AREA.HW2);
+				l.neighbors.add(AREA.HW4);
+				l.isRoom = true;
+				break;
+			case Lounge:
+				l.neighbors.add(AREA.HW2);
+				l.neighbors.add(AREA.HW5);
+				l.neighbors.add(AREA.BilliardRoom);
+				l.isRoom = true;
+				break;
+			case Library:
+				l.neighbors.add(AREA.HW3);
+				l.neighbors.add(AREA.HW6);
+				l.neighbors.add(AREA.HW8);
+				l.isRoom = true;
+				break;
+			case BilliardRoom:
+				l.neighbors.add(AREA.HW4);
+				l.neighbors.add(AREA.HW6);
+				l.neighbors.add(AREA.HW7);
+				l.neighbors.add(AREA.HW9);
+				l.isRoom = true;
+				break;
+			case DiningRoom:
+				l.neighbors.add(AREA.HW5);
+				l.neighbors.add(AREA.HW7);
+				l.neighbors.add(AREA.HW10);
+				l.isRoom = true;
+				break;
+			case Conservatory:
+				l.neighbors.add(AREA.HW8);
+				l.neighbors.add(AREA.HW11);
+				l.neighbors.add(AREA.BilliardRoom);
+				l.isRoom = true;
+				break;
+			case Ballroom:
+				l.neighbors.add(AREA.HW9);
+				l.neighbors.add(AREA.HW11);
+				l.neighbors.add(AREA.HW12);
+				l.isRoom = true;
+				break;
+			case Kitchen:
+				l.neighbors.add(AREA.HW10);
+				l.neighbors.add(AREA.HW12);
+				l.neighbors.add(AREA.BilliardRoom);
+				l.isRoom = true;
+				break;
+			case HW1:
+				l.neighbors.add(AREA.Study);
+				l.neighbors.add(AREA.Hall);
+				break;
+			case HW2:
+				l.neighbors.add(AREA.Hall);
+				l.neighbors.add(AREA.Lounge);
+				break;
+			case HW3:
+				l.neighbors.add(AREA.Study);
+				l.neighbors.add(AREA.Library);
+				break;
+			case HW4:
+				l.neighbors.add(AREA.Hall);
+				l.neighbors.add(AREA.BilliardRoom);
+				break;
+			case HW5:
+				l.neighbors.add(AREA.Lounge);
+				l.neighbors.add(AREA.DiningRoom);
+				break;
+			case HW6:
+				l.neighbors.add(AREA.Library);
+				l.neighbors.add(AREA.BilliardRoom);
+				break;
+			case HW7:
+				l.neighbors.add(AREA.BilliardRoom);
+				l.neighbors.add(AREA.DiningRoom);
+				break;
+			case HW8:
+				l.neighbors.add(AREA.Library);
+				l.neighbors.add(AREA.Conservatory);
+				break;
+			case HW9:
+				l.neighbors.add(AREA.BilliardRoom);
+				l.neighbors.add(AREA.Ballroom);
+				break;
+			case HW10:
+				l.neighbors.add(AREA.DiningRoom);
+				l.neighbors.add(AREA.Kitchen);
+				break;
+			case HW11:
+				l.neighbors.add(AREA.Conservatory);
+				l.neighbors.add(AREA.Ballroom);
+				break;
+			case HW12:
+				l.neighbors.add(AREA.Ballroom);
+				l.neighbors.add(AREA.Kitchen);
+				break;
 			}
+			locations.add(l);
 		}
 		
 		return locations;

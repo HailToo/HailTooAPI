@@ -9,6 +9,7 @@ public class User {
 	public long id;
     public String name;
     public String email;
+    public Board.CHARACTER character;
     
     public User(String name, String email) {
     	//Temporary id, will be assigned by db (or maybe just use email?)

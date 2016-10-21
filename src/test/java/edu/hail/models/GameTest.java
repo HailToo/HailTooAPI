@@ -37,7 +37,7 @@ public class GameTest {
 	@Test
 	public void verifyData() {
 		int roomCount = 0, hallCount = 0;
-		for (Board.Location loc : Board.getLocations()) {
+		for (Board.Location loc : Board.generateLocations()) {
 			if (loc.isRoom) {
 				roomCount++;
 				Assert.assertTrue("Room must have at least 3 neighbors.", loc.neighbors.size() >= 3);

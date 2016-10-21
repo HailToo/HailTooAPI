@@ -10,18 +10,23 @@ public class Game extends GameEntity {
 	private Board.WEAPON _weapon;
 	private Board.CHARACTER _suspect;
 	
+	public Board board;
+	
+	public static final int MAX_PLAYERS = 6;
+	
 	private Random random = null;
 	
 	/**
 	 * Create solution
 	 */
 	public Game() {
+		board = new Board();
 		int rand = 0;
 		// Select the room
 		Board.Location l = null;
 		do {
-			rand = getRandomInt(Board.getLocations().size());
-			l = Board.getLocations().get(rand);
+			rand = getRandomInt(board.getLocations().size());
+			l = board.getLocations().get(rand);
 		} while (!l.isRoom);
 		_room = l.name;
 		

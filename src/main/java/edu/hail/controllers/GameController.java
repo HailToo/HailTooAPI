@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import edu.hail.DataGenerator;
+import edu.hail.models.Board;
+import edu.hail.models.Board.Location;
 import edu.hail.models.Game;
 import edu.hail.models.GameEntity;
 import edu.hail.models.Room;
@@ -20,62 +22,50 @@ import java.util.*;
 public class GameController {
     private static final Map<String, Map<Integer, GameEntity>> db = new HashMap<String, Map<Integer, GameEntity>>();
     private static final String TITLE = "Clueless: a HAIL of a ride!";
-    
-    static {
-    	db.put("suspects", new HashMap<Integer, GameEntity>());
-    	db.put("rooms", new HashMap<Integer, GameEntity>());
-    	db.put("weapons", new HashMap<Integer, GameEntity>());
-    	db.put("games", new HashMap<Integer, GameEntity>());
-    	
-       db.get("suspects").put(1, new GameEntity("Professor Peter Plum"));
-       db.get("suspects").put(2, new GameEntity("Miss Josephine Scarlet"));
-       db.get("suspects").put(3, new GameEntity("Colonel Michael Mustard"));
-       db.get("suspects").put(4, new GameEntity("Mrs. Blanche White"));
-       db.get("suspects").put(5, new GameEntity("Mrs. Patricia Peacock"));
-       db.get("suspects").put(6, new GameEntity("Reverend John Green"));
-       
-       List<Room> rooms = DataGenerator.createAllRooms();
-       for(int i = 0; i < rooms.size(); ++i) {
-    	   db.get("rooms").put(i+1, rooms.get(i));
-       }
-       
-       db.get("weapons").put(1, new GameEntity("Candlestick"));
-       db.get("weapons").put(2, new GameEntity("Knife"));
-       db.get("weapons").put(3, new GameEntity("Lead pipe"));
-       db.get("weapons").put(4, new GameEntity("Revolver"));
-       db.get("weapons").put(5, new GameEntity("Rope"));
-       db.get("weapons").put(6, new GameEntity("Wrench"));
-       
-    }
 
     @RequestMapping(value="/suspects/{id}", method = RequestMethod.GET)
-    public @ResponseBody GameEntity getSuspect(HttpServletRequest req, @PathVariable int id) {
-        return db.get("suspects").get(id);
+    public @ResponseBody Board.CHARACTER getSuspect(HttpServletRequest req, @PathVariable int id) {
+        return Board.CHARACTER.values()[id];
     }
 
     @RequestMapping(value="/suspects", method = RequestMethod.GET)
-    public @ResponseBody Collection<GameEntity> getSuspects(HttpServletRequest req) {
-        return db.get("suspects").values();
+    public @ResponseBody Board.CHARACTER[] getSuspects(HttpServletRequest req) {
+    	return Board.CHARACTER.values();
     }
     
     @RequestMapping(value="/weapons/{id}", method = RequestMethod.GET)
-    public @ResponseBody GameEntity getWeapon(HttpServletRequest req, @PathVariable int id) {
-        return db.get("weapons").get(id);
+    public @ResponseBody Board.WEAPON getWeapon(HttpServletRequest req, @PathVariable int id) {
+    	return Board.WEAPON.values()[id];
     }
 
     @RequestMapping(value="/weapons", method = RequestMethod.GET)
-    public @ResponseBody Collection<GameEntity> getWeapons(HttpServletRequest req) {
-        return db.get("weapons").values();
+    public @ResponseBody Board.WEAPON[] getWeapons(HttpServletRequest req) {
+    	return Board.WEAPON.values();
     }
     
     @RequestMapping(value="/rooms/{id}", method = RequestMethod.GET)
-    public @ResponseBody GameEntity getRoom(HttpServletRequest req, @PathVariable int id) {
-        return db.get("rooms").get(id);
+    public @ResponseBody Board.AREA getRoom(HttpServletRequest req, @PathVariable int id) {
+    	return Board.AREA.values()[id];
+    }
+    
+    @RequestMapping(value="/rooms/{id}/moves", method = RequestMethod.GET)
+    public @ResponseBody List<Board.AREA> getPossibleMoves(HttpServletRequest req, @RequestParam String gameGuid, @PathVariable int id) {
+    	List<Board.AREA> moves = new ArrayList<Board.AREA>();
+    	
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	Location currentLocation = game.board.getLocation(Board.AREA.values()[id]);
+    	for (Board.AREA potentialMove : currentLocation.neighbors) {
+    		Location potentialLocation = game.board.getLocation(potentialMove);
+    		if (potentialLocation.capacity() > potentialLocation.occupants.size()) {
+    			moves.add(potentialLocation.name);
+    		}
+    	}
+    	return moves;
     }
 
     @RequestMapping(value="/rooms", method = RequestMethod.GET)
-    public @ResponseBody Collection<GameEntity> getRooms(HttpServletRequest req) {
-        return db.get("rooms").values();
+    public @ResponseBody Board.AREA[] getRooms(HttpServletRequest req) {
+    	return Board.AREA.values();
     }
     
     @RequestMapping(value="/game/title", method = RequestMethod.GET)
@@ -90,13 +80,14 @@ public class GameController {
      * @param req
      * @return
      */
-    public @ResponseBody String startGame(HttpServletRequest req) {
+    @RequestMapping(value="/game", method = RequestMethod.PUT)
+    public @ResponseBody String createGame(HttpServletRequest req) {
     	// Create unique game identifier
     	String gameId = UUID.randomUUID().toString();
     	Game newGame = new Game();
     	newGame.name = gameId;
     	newGame.players.add(new User(req.getUserPrincipal().getName(), ""));
-    	return null;
+    	return gameId;
     }
     
     /**
@@ -108,14 +99,20 @@ public class GameController {
      * @param gameGuid
      * @return
      */
-    public @ResponseBody String joinGame(HttpServletRequest req, @PathVariable String gameGuid) {
+    @RequestMapping(value="/game", method = RequestMethod.POST)
+    public @ResponseBody Game joinGame(HttpServletRequest req, @RequestParam String gameGuid, @RequestParam Board.CHARACTER characterChoice) {
     	Game game = (Game) db.get("games").get(gameGuid);
     	
     	// Get the requesting user
+    	User user = new User(req.getUserPrincipal().getName(), "");
+    	user.character = characterChoice;
+    	// TODO - check that character has not already been chosen.
     	
     	// Add to game
-    	//game.players.add(user);
-    	return null;
+    	if (game.players.size() < Game.MAX_PLAYERS) {
+    		game.players.add(user);
+    	}
+    	return game;
     }
     
 	/**
