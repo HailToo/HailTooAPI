@@ -69,9 +69,9 @@ Game = {
 						$.getJSON('api/rooms/' + (roomIndex + 1),
 							null,
 							function(data) {
-								Game._rooms[data.id].setName(data.name);
-								Game._rooms[data.id].css('background-image', 'url("' + data.imageUri + '")');
-								Game._rooms[data.id].css('background-size', '100% 100%');
+								Game._rooms[roomIndex].setName(data);
+								Game._rooms[roomIndex].css('background-image', 'url("images/' + data + '")');
+								Game._rooms[roomIndex].css('background-size', '100% 100%');
 							});
 					}
 				}

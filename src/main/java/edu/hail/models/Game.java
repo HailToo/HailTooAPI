@@ -1,5 +1,6 @@
 package edu.hail.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +38,8 @@ public class Game extends GameEntity {
 		// Select the suspect
 		rand = getRandomInt(Board.CHARACTER.values().length);
 		_suspect = Board.CHARACTER.values()[rand];
+		
+		players = new ArrayList<User>();
 	}
 	
 	public boolean solve(String roomName, String weaponName, String suspectName) {
@@ -63,5 +66,10 @@ public class Game extends GameEntity {
 	
 	protected Board.AREA getRoom() {
 		return _room;
+	}
+	
+	public void addPlayer(User user) {
+		Board.Location defaultPlayerLocation = board.getDefaultLocation(user.character);
+		defaultPlayerLocation.occupants.add(user);
 	}
 }

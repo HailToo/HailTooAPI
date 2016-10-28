@@ -11,6 +11,7 @@ import edu.hail.models.GameEntity;
 import edu.hail.models.Room;
 import edu.hail.models.User;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -20,8 +21,12 @@ import java.util.*;
 @Controller
 @RequestMapping("/api")
 public class GameController {
-    private static final Map<String, Map<Integer, GameEntity>> db = new HashMap<String, Map<Integer, GameEntity>>();
+    private static final Map<String, Map<String, GameEntity>> db = new HashMap<String, Map<String, GameEntity>>();
     private static final String TITLE = "Clueless: a HAIL of a ride!";
+    
+    static {
+    	db.put("games", new HashMap<String, GameEntity>());
+    }
 
     @RequestMapping(value="/suspects/{id}", method = RequestMethod.GET)
     public @ResponseBody Board.CHARACTER getSuspect(HttpServletRequest req, @PathVariable int id) {
@@ -86,7 +91,9 @@ public class GameController {
     	String gameId = UUID.randomUUID().toString();
     	Game newGame = new Game();
     	newGame.name = gameId;
-    	newGame.players.add(new User(req.getUserPrincipal().getName(), ""));
+    	db.get("games").put(gameId, newGame);
+//    	newGame.players.add(new User(getUserName(req), ""));
+    	//Maybe player has to join the game once created?
     	return gameId;
     }
     
@@ -104,7 +111,7 @@ public class GameController {
     	Game game = (Game) db.get("games").get(gameGuid);
     	
     	// Get the requesting user
-    	User user = new User(req.getUserPrincipal().getName(), "");
+    	User user = new User(getUserName(req), "");
     	user.character = characterChoice;
     	// TODO - check that character has not already been chosen.
     	
@@ -112,6 +119,19 @@ public class GameController {
     	if (game.players.size() < Game.MAX_PLAYERS) {
     		game.players.add(user);
     	}
+    	return game;
+    }
+    
+    /**
+     * TODO
+     * Player starts an instance of the game. A GUID is generated to
+     * represent this particular game and is returned to the user.
+     * @param req
+     * @return
+     */
+    @RequestMapping(value="/game/{gameGuid}", method = RequestMethod.GET)
+    public @ResponseBody Game getGameInfo(HttpServletRequest req, @PathVariable String gameGuid) {
+    	Game game = (Game) db.get("games").get(gameGuid);
     	return game;
     }
     
@@ -127,5 +147,17 @@ public class GameController {
     public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @PathVariable String roomName, @PathVariable String weaponName, @PathVariable String suspectName) {
     	Game game = (Game) db.get("games").get(gameGuid);
     	return game.solve(roomName, weaponName, suspectName);
+    }
+    
+    public String getUserName(HttpServletRequest req) {
+    	String name = "N/A";
+    	Cookie[] cookies = req.getCookies();
+    	for (Cookie c : cookies) {
+    		if(c.getName().equalsIgnoreCase("user_token")) {
+    			name = c.getValue();
+    		}
+    	}
+    	
+    	return name;
     }
 }

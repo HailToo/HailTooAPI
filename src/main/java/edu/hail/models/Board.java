@@ -8,7 +8,7 @@ public class Board {
 	private List<Location> locations = null;
 	
 	public List<Location> getLocations() {
-		return getLocations();
+		return locations;
 	}
 	
 	public Board() {
@@ -68,7 +68,7 @@ public class Board {
 	}
 	
 	public Location getLocation(AREA area) {
-		for (Location l : locations = generateLocations()) {
+		for (Location l : locations) {
 			if (l.name.equals(area))
 				return l;
 		}
@@ -198,5 +198,32 @@ public class Board {
 		return locations;
 	}
 	
+	public Location getDefaultLocation(Board.CHARACTER character) {
+		AREA defaultArea = null;
+		
+		switch (character) {
+		case ColMustard:
+			defaultArea = AREA.HW5;
+			break;
+		case MrGreen:
+			defaultArea = AREA.HW11;
+			break;
+		case MrsPeacock:
+			defaultArea = AREA.HW8;
+			break;
+		case MrsWhite:
+			defaultArea = AREA.HW12;
+			break;
+		case MsScarlet:
+			defaultArea = AREA.HW2;
+			break;
+		case ProfPlum:
+			defaultArea = AREA.HW3;
+			break;
+		}
+		
+		Location defaultLocation = getLocation(defaultArea);
+		return defaultLocation;
+	}
 
 }

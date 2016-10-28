@@ -1,7 +1,7 @@
 Components = {
 	grid: {
 		init: function() {
-			console.log('initializing component: grid.');
+			//console.log('initializing component: grid.');
 			this.attr({ 
 				w: Game.board.tile.width, 
 				h: Game.board.tile.height 
@@ -22,14 +22,14 @@ Components = {
 	 */
 	actor: {
 		init: function() {
-			console.log('initializing component: actor.');
+			//console.log('initializing component: actor.');
 		    this.requires('2D, Canvas, Grid');
 		  }
 	},
 	
 	player: {
 		init: function() {
-			console.log('initializing component: player.');
+			//console.log('initializing component: player.');
 			this.requires('Actor, Color, Fourway, Collision')
 				.color('#FFF')
 				.fourway(50)
@@ -72,7 +72,7 @@ Components = {
 		inhabitants: [],
 		
 		init: function() {
-			console.log('initializing component: room.');
+			//console.log('initializing component: room.');
 			
 			this.requires('Actor, Color, DOM')
 				.color('rgb(255, 255, 255)');
@@ -103,7 +103,7 @@ Components = {
 	
 	hall: {
 		init: function() {
-			console.log('initializing component: hall.');
+			//console.log('initializing component: hall.');
 			this.requires('Actor, Color, DOM')
 				.color('rgb(245, 245, 220)')
 				.css({

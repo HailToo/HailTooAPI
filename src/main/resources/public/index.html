@@ -5,9 +5,50 @@
   	<script src="app/app.js"></script>
   	<script src="app/components.js"></script>
   	<script>window.addEventListener('load', Game.init);</script>
+  	<script type="text/javascript">
+  		$(document).ready(function() {
+  			console.log("loaded.");
+  			
+  			$( "#create" ).click(function() {
+  				$.ajax({
+  				  url: "api/game",
+  				  method: 'PUT'
+  				}).done(function(data) {
+  				  console.log("reply: " + data);
+  				  document.gameGuid = data;
+  				});
+  			});
+  			
+  			$( "#join" ).click(function() {
+  				$.ajax({
+  				  url: "api/game",
+  				  method: 'POST',
+  				  data: { gameGuid: document.gameGuid, characterChoice: "ProfPlum" }
+  				}).done(function(data) {
+  				  console.log("reply: " + data);
+  				  //document.gameGuid = data;
+  				});
+  			});
+  			
+  			$( "#get" ).click(function() {
+  				$.ajax({
+  				  url: "api/game/" + document.gameGuid,
+  				  method: 'GET'
+  				}).done(function(data) {
+  				  console.log("reply: " + JSON.stringify(data));
+  				});
+  			});
+  			
+  		});
+  	</script>
   </head>
   <body>
   	<h1 id="title"></h1>
     <div id="game"></div>
   </body>
+  <footer>
+  	<button id="create">Create</button>
+  	<button id="join">Join Game</button>
+  	<button id="get">Get Game</button>
+  </footer>
 </html>

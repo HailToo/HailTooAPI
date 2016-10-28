@@ -63,8 +63,9 @@ bootRun {
 
 task bootDebug(type: org.springframework.boot.gradle.run.BootRunTask) {
     doFirst() {
-        jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005'
+        jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000'
     }
+    
 }
 
 task wrapper(type: Wrapper) {
