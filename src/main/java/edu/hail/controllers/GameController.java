@@ -147,6 +147,7 @@ public class GameController {
     public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @PathVariable String roomName, @PathVariable String weaponName, @PathVariable String suspectName) {
     	Game game = (Game) db.get("games").get(gameGuid);
     	return game.solve(roomName, weaponName, suspectName);
+    	//TODO if true - game is finished, notify all players.
     }
     
     public String getUserName(HttpServletRequest req) {
