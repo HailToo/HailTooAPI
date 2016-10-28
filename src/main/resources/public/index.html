@@ -23,7 +23,7 @@
   				$.ajax({
   				  url: "api/game",
   				  method: 'POST',
-  				  data: { gameGuid: document.gameGuid, characterChoice: "ProfPlum" }
+  				  data: { gameGuid: document.gameGuid, characterChoice: Game._player.attr("name") }
   				}).done(function(data) {
   				  console.log("reply: " + data);
   				  //document.gameGuid = data;
