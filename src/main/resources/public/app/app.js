@@ -36,8 +36,8 @@ Game = {
 		// Create entity (player object)
 		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 10);
 		Game._player.color("rgba(0,0,0,0.01)");
-		Game._player.w = 100;
-		Game._player.h = 100;
+		Game._player.w = 35;
+		Game._player.h = 70;
 		Game._player.z = 1000000000;
 		Game._player.css("background-size", "100%")
 		Game._player.attr("name", window.prompt("Pick a character", "profPlum"));
