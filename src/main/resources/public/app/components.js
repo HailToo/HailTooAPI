@@ -30,8 +30,8 @@ Components = {
 	player: {
 		init: function() {
 			//console.log('initializing component: player.');
-			this.requires('Actor, Color, Fourway, Collision')
-				.color('#FFF')
+			this.requires('Actor, Color, Fourway, Collision, DOM')
+				.color('rgba(0,0,0,0.01)')
 				.fourway(50)
 				.collides();
 		},
@@ -48,7 +48,7 @@ Components = {
 		 * Prevent character from moving.
 		 */
 		stop: function() {
-			console.log('Collision with solid object.');
+			//console.log('Collision with solid object.');
 			this._speed=0;
 			if (this.motionDelta()) {
 				this.x -= this.motionDelta().x;
@@ -57,7 +57,7 @@ Components = {
 		},
 		
 		tryEnterRoom: function() {
-			console.log('Attempt to enter room.');
+			//console.log('Attempt to enter room.');
 		}
 	},
 	

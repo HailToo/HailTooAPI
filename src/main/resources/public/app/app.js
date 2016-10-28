@@ -34,7 +34,14 @@ Game = {
 		Crafty.c('Suspect', Components.suspect);
 		
 		// Create entity (player object)
-		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 2);
+		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 10);
+		Game._player.color("rgba(0,0,0,0.01)");
+		Game._player.w = 100;
+		Game._player.h = 100;
+		Game._player.z = 1000000000;
+		Game._player.css("background-size", "100%")
+		Game._player.attr("name", window.prompt("Pick a character", "profPlum"));
+		Game._player.css("background-image", "url('images/" + Game._player.attr("name") + ".png')");
 		
 		// Create board (grid, rooms, hallways)
 		Game.drawBoard();
@@ -59,34 +66,8 @@ Game = {
 				if (x === 0 || x === this.board.width - 1 || y ===0 || y === this.board.height - 1) {
 					Crafty.e('Edge').at(x, y);
 				} 
-				// Draw rooms starting that the specified tiles
-//				else if (y === 3 || y === 12 || y === 20) {
-//					if (x === 4 || x === 13 || x === 22) {
-//						this._rooms.push(Crafty.e('Room').at(x, y));
-//							//.css({ 'background-image': 'url("images/lounge.png")', 'background-size': '100% 100%' }));
-//						//TODO send server the room's index, get back the name, the photo url, etc.
-//						var roomIndex = this._rooms.length - 1;
-//						$.getJSON('api/rooms/' + (roomIndex + 1),
-//							null,
-//							function(data) {
-//								Game._rooms[roomIndex].setName(data);
-//								Game._rooms[roomIndex].css('background-image', 'url("images/' + data + '")');
-//								Game._rooms[roomIndex].css('background-size', '100% 100%');
-//							});
-//					}
-//				}
 			}
 		}
-		
-		// Create hallways between rooms
-//		for (var i = 0; i < this._rooms.length - 1; ++i) {
-//			if (i === 0 || i % 3 !==  2) {
-//				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 1]));
-//			}
-//			if (i < this._rooms.length - 3) {
-//				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 3]));
-//			}
-//		}
 		
 		//Draw each room
 		Game.makeRoom('study');
@@ -98,6 +79,16 @@ Game = {
 		Game.makeRoom('conservatory');
 		Game.makeRoom('ballroom');
 		Game.makeRoom('kitchen');
+		
+		// Create hallways between rooms
+		for (var i = 0; i < this._rooms.length - 1; ++i) {
+			if (i === 0 || i % 3 !==  2) {
+				Game.makeHallway(this._rooms[i], this._rooms[i + 1]);
+			}
+			if (i < this._rooms.length - 3) {
+				Game.makeHallway(this._rooms[i], this._rooms[i + 3]);
+			}
+		}
 	},
 	
 	makeRoom(name) {
@@ -154,21 +145,23 @@ Game = {
 		// Determine width/height of hallway
 		if (room1.pos()._x === room2.pos()._x) {
 			// vertical hallway
-			w = 3 * Game.board.tile.width;
+			w = 2 * Game.board.tile.width;
 			h = room2.pos()._y - (room1.pos()._y + room1.pos()._h);
 			y = room1.pos()._y + room1.pos()._h;
-			x = room1.pos()._x + Game.board.tile.width;
+			x = room1.pos()._x + (4 * Game.board.tile.width);
 		} else if (room1.pos()._y === room2.pos()._y) {
 			// horizontal hallway
-			h = 3 * Game.board.tile.height;
+			h = 2 * Game.board.tile.height;
 			w = room2.pos()._x - (room1.pos()._x + room1.pos()._w);
 			x = room1.pos()._x + room1.pos()._w;
-			y = room1.pos()._y + Game.board.tile.height; 
+			y = room1.pos()._y + (4 * Game.board.tile.height); 
 		} else {
 			return;
 		}
 		
 		// Determine where to draw (tile position)
-		return Crafty.e('Hall').attr({ x: x, y: y, w: w, h: h });
+		var hallway = Crafty.e('Hall').attr({ x: x, y: y, w: w, h: h });
+		this._hallways.push(hallway);
+		return hallway;
 	}
 }
