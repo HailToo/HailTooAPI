@@ -77,9 +77,9 @@ Components = {
 			this.requires('Actor, Color, DOM')
 				.color('rgb(255, 255, 255)');
 			// 5 tiles wide
-			this.w = 5 * Game.board.tile.width;
+			this.w = 10 * Game.board.tile.width;
 			// 5 tiles tall
-			this.h = 5 * Game.board.tile.height;
+			this.h = 10 * Game.board.tile.height;
 		},
 		
 		tryToEnter: function(player) {

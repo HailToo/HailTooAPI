@@ -13,8 +13,8 @@ Game = {
 		},
 		
 		// Dimensions of board (in tiles)
-		width: 31,
-		height: 30
+		width: 40,
+		height: 40
 	},
 
 	init: function() {
@@ -60,33 +60,93 @@ Game = {
 					Crafty.e('Edge').at(x, y);
 				} 
 				// Draw rooms starting that the specified tiles
-				else if (y === 3 || y === 12 || y === 20) {
-					if (x === 4 || x === 13 || x === 22) {
-						this._rooms.push(Crafty.e('Room').at(x, y));
-							//.css({ 'background-image': 'url("images/lounge.png")', 'background-size': '100% 100%' }));
-						//TODO send server the room's index, get back the name, the photo url, etc.
-						var roomIndex = this._rooms.length - 1;
-						$.getJSON('api/rooms/' + (roomIndex + 1),
-							null,
-							function(data) {
-								Game._rooms[roomIndex].setName(data);
-								Game._rooms[roomIndex].css('background-image', 'url("images/' + data + '")');
-								Game._rooms[roomIndex].css('background-size', '100% 100%');
-							});
-					}
-				}
+//				else if (y === 3 || y === 12 || y === 20) {
+//					if (x === 4 || x === 13 || x === 22) {
+//						this._rooms.push(Crafty.e('Room').at(x, y));
+//							//.css({ 'background-image': 'url("images/lounge.png")', 'background-size': '100% 100%' }));
+//						//TODO send server the room's index, get back the name, the photo url, etc.
+//						var roomIndex = this._rooms.length - 1;
+//						$.getJSON('api/rooms/' + (roomIndex + 1),
+//							null,
+//							function(data) {
+//								Game._rooms[roomIndex].setName(data);
+//								Game._rooms[roomIndex].css('background-image', 'url("images/' + data + '")');
+//								Game._rooms[roomIndex].css('background-size', '100% 100%');
+//							});
+//					}
+//				}
 			}
 		}
 		
 		// Create hallways between rooms
-		for (var i = 0; i < this._rooms.length - 1; ++i) {
-			if (i === 0 || i % 3 !==  2) {
-				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 1]));
-			}
-			if (i < this._rooms.length - 3) {
-				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 3]));
-			}
+//		for (var i = 0; i < this._rooms.length - 1; ++i) {
+//			if (i === 0 || i % 3 !==  2) {
+//				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 1]));
+//			}
+//			if (i < this._rooms.length - 3) {
+//				this._hallways.push(Game.makeHallway(this._rooms[i], this._rooms[i + 3]));
+//			}
+//		}
+		
+		//Draw each room
+		Game.makeRoom('study');
+		Game.makeRoom('hall');
+		Game.makeRoom('lounge');
+		Game.makeRoom('library');
+		Game.makeRoom('billiardRoom');
+		Game.makeRoom('diningRoom');
+		Game.makeRoom('conservatory');
+		Game.makeRoom('ballroom');
+		Game.makeRoom('kitchen');
+	},
+	
+	makeRoom(name) {
+		var atX, atY;
+		switch(name) {
+			case 'study':
+				atX = 1;
+				atY = 1;
+				break;
+			case 'hall':
+				atX = 15;
+				atY = 1;
+				break;
+			case 'lounge':
+				atX = 29;
+				atY = 1;
+				break;
+			case 'library':
+				atX = 1;
+				atY = 15;
+				break;
+			case 'billiardRoom':
+				atX = 15;
+				atY = 15;
+				break;
+			case 'diningRoom':
+				atX = 29;
+				atY = 15;
+				break;
+			case 'conservatory':
+				atX = 1;
+				atY = 29;
+				break;
+			case 'ballroom':
+				atX = 15;
+				atY = 29;
+				break;
+			case 'kitchen':
+				atX = 29;
+				atY = 29;
+				break;
 		}
+		
+		var room = Crafty.e('Room').at(atX, atY);
+		room.setName(name);
+		var backgroundImageCss = "url('images/" + name + ".png')";
+		room.css('background-image', backgroundImageCss);
+		room.css('background-size', '100% 100%');
+		this._rooms.push(room);
 	},
 	
 	makeHallway(room1, room2) {
