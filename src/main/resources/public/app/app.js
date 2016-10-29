@@ -40,7 +40,7 @@ Game = {
 		Game._player.h = 70;
 		Game._player.z = 1000000000;
 		Game._player.css("background-size", "100%")
-		Game._player.attr("name", window.prompt("Pick a character", "profPlum"));
+		Game._player.attr("name", window.prompt("Pick a character", "ProfPlum"));
 		Game._player.css("background-image", "url('images/" + Game._player.attr("name") + ".png')");
 		
 		// Create board (grid, rooms, hallways)
@@ -70,15 +70,15 @@ Game = {
 		}
 		
 		//Draw each room
-		Game.makeRoom('study');
-		Game.makeRoom('hall');
-		Game.makeRoom('lounge');
-		Game.makeRoom('library');
-		Game.makeRoom('billiardRoom');
-		Game.makeRoom('diningRoom');
-		Game.makeRoom('conservatory');
-		Game.makeRoom('ballroom');
-		Game.makeRoom('kitchen');
+		Game.makeRoom('Study');
+		Game.makeRoom('Hall');
+		Game.makeRoom('Lounge');
+		Game.makeRoom('Library');
+		Game.makeRoom('BilliardRoom');
+		Game.makeRoom('DiningRoom');
+		Game.makeRoom('Conservatory');
+		Game.makeRoom('Ballroom');
+		Game.makeRoom('Kitchen');
 		
 		// Create hallways between rooms
 		for (var i = 0; i < this._rooms.length - 1; ++i) {
@@ -94,46 +94,46 @@ Game = {
 	makeRoom(name) {
 		var atX, atY;
 		switch(name) {
-			case 'study':
+			case 'Study':
 				atX = 1;
 				atY = 1;
 				break;
-			case 'hall':
+			case 'Hall':
 				atX = 15;
 				atY = 1;
 				break;
-			case 'lounge':
+			case 'Lounge':
 				atX = 29;
 				atY = 1;
 				break;
-			case 'library':
+			case 'Library':
 				atX = 1;
 				atY = 15;
 				break;
-			case 'billiardRoom':
+			case 'BilliardRoom':
 				atX = 15;
 				atY = 15;
 				break;
-			case 'diningRoom':
+			case 'DiningRoom':
 				atX = 29;
 				atY = 15;
 				break;
-			case 'conservatory':
+			case 'Conservatory':
 				atX = 1;
 				atY = 29;
 				break;
-			case 'ballroom':
+			case 'Ballroom':
 				atX = 15;
 				atY = 29;
 				break;
-			case 'kitchen':
+			case 'Kitchen':
 				atX = 29;
 				atY = 29;
 				break;
 		}
 		
 		var room = Crafty.e('Room').at(atX, atY);
-		room.setName(name);
+		room.attr("name", name);
 		var backgroundImageCss = "url('images/" + name + ".png')";
 		room.css('background-image', backgroundImageCss);
 		room.css('background-size', '100% 100%');
@@ -142,6 +142,7 @@ Game = {
 	
 	makeHallway(room1, room2) {
 		var x = 0, y = 0, w = 0, h = 0;
+		var name = "HW_" + room1.attr("name").substring(0,1) + room2.attr("name").substring(0,1);
 		// Determine width/height of hallway
 		if (room1.pos()._x === room2.pos()._x) {
 			// vertical hallway
@@ -161,7 +162,36 @@ Game = {
 		
 		// Determine where to draw (tile position)
 		var hallway = Crafty.e('Hall').attr({ x: x, y: y, w: w, h: h });
+		hallway.attr("name", name);
 		this._hallways.push(hallway);
 		return hallway;
+	},
+	
+	moveToArea(areaName) {
+		var targetRoom = this._rooms.filter(function(r) {
+			return r.attr("name") === areaName;
+		});
+		
+		//TODO: adjust if multiple occupants in the room.
+		if(targetRoom.length === 1) {
+			targetRoom = targetRoom[0];
+			//move player within the bounds of this room.
+			var targetX = (targetRoom.x + (targetRoom.w / 2)) / Game.board.tile.width;
+			var targetY = targetRoom.y / Game.board.tile.height;
+			Game._player.at(targetX, targetY);
+		} else {
+			//Check hallways
+			targetRoom = this._hallways.filter(function(h) {
+				return h.attr("name") === areaName;
+			});
+			if(targetRoom !== null) {
+				targetRoom = targetRoom[0];
+				//move player within the bounds of this room. 
+				var targetX = targetRoom.x / Game.board.tile.width;
+				var targetY = (targetRoom.y - (Game._player.h / 2)) / Game.board.tile.height;
+				Game._player.at(targetX, targetY);
+			}
+		}
+		
 	}
 }

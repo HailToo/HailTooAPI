@@ -114,6 +114,7 @@ public class GameController {
     	User user = new User(getUserName(req), "");
     	user.character = characterChoice;
     	// TODO - check that character has not already been chosen.
+    	game.board.getDefaultLocation(characterChoice).occupants.add(user);
     	
     	// Add to game
     	if (game.players.size() < Game.MAX_PLAYERS) {
