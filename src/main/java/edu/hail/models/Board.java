@@ -43,7 +43,7 @@ public class Board {
 		Conservatory,
 		Ballroom,
 		Kitchen,
-		HW1, HW2, HW3, HW4, HW5, HW6, HW7, HW8, HW9, HW10, HW11, HW12
+		HW_SH, HW_HL, HW_SL, HW_HB, HW_LD, HW_LB, HW_BD, HW_LC, HW_BB, HW_DK, HW_CB, HW_BK
 	}
 	
 	public static class Location {
@@ -89,105 +89,105 @@ public class Board {
 			
 			switch (area) {
 			case Study:
-				l.neighbors.add(AREA.HW1);
-				l.neighbors.add(AREA.HW3);
+				l.neighbors.add(AREA.HW_SH);
+				l.neighbors.add(AREA.HW_SL);
 				l.neighbors.add(AREA.BilliardRoom);
 				l.isRoom = true;
 				break;
 			case Hall:
-				l.neighbors.add(AREA.HW1);
-				l.neighbors.add(AREA.HW2);
-				l.neighbors.add(AREA.HW4);
+				l.neighbors.add(AREA.HW_SH);
+				l.neighbors.add(AREA.HW_HL);
+				l.neighbors.add(AREA.HW_HB);
 				l.isRoom = true;
 				break;
 			case Lounge:
-				l.neighbors.add(AREA.HW2);
-				l.neighbors.add(AREA.HW5);
+				l.neighbors.add(AREA.HW_HL);
+				l.neighbors.add(AREA.HW_LD);
 				l.neighbors.add(AREA.BilliardRoom);
 				l.isRoom = true;
 				break;
 			case Library:
-				l.neighbors.add(AREA.HW3);
-				l.neighbors.add(AREA.HW6);
-				l.neighbors.add(AREA.HW8);
+				l.neighbors.add(AREA.HW_SL);
+				l.neighbors.add(AREA.HW_LB);
+				l.neighbors.add(AREA.HW_LC);
 				l.isRoom = true;
 				break;
 			case BilliardRoom:
-				l.neighbors.add(AREA.HW4);
-				l.neighbors.add(AREA.HW6);
-				l.neighbors.add(AREA.HW7);
-				l.neighbors.add(AREA.HW9);
+				l.neighbors.add(AREA.HW_HB);
+				l.neighbors.add(AREA.HW_LB);
+				l.neighbors.add(AREA.HW_BD);
+				l.neighbors.add(AREA.HW_BB);
 				l.isRoom = true;
 				break;
 			case DiningRoom:
-				l.neighbors.add(AREA.HW5);
-				l.neighbors.add(AREA.HW7);
-				l.neighbors.add(AREA.HW10);
+				l.neighbors.add(AREA.HW_LD);
+				l.neighbors.add(AREA.HW_BD);
+				l.neighbors.add(AREA.HW_DK);
 				l.isRoom = true;
 				break;
 			case Conservatory:
-				l.neighbors.add(AREA.HW8);
-				l.neighbors.add(AREA.HW11);
+				l.neighbors.add(AREA.HW_LC);
+				l.neighbors.add(AREA.HW_CB);
 				l.neighbors.add(AREA.BilliardRoom);
 				l.isRoom = true;
 				break;
 			case Ballroom:
-				l.neighbors.add(AREA.HW9);
-				l.neighbors.add(AREA.HW11);
-				l.neighbors.add(AREA.HW12);
+				l.neighbors.add(AREA.HW_BB);
+				l.neighbors.add(AREA.HW_CB);
+				l.neighbors.add(AREA.HW_BK);
 				l.isRoom = true;
 				break;
 			case Kitchen:
-				l.neighbors.add(AREA.HW10);
-				l.neighbors.add(AREA.HW12);
+				l.neighbors.add(AREA.HW_DK);
+				l.neighbors.add(AREA.HW_BK);
 				l.neighbors.add(AREA.BilliardRoom);
 				l.isRoom = true;
 				break;
-			case HW1:
+			case HW_SH:
 				l.neighbors.add(AREA.Study);
 				l.neighbors.add(AREA.Hall);
 				break;
-			case HW2:
+			case HW_HL:
 				l.neighbors.add(AREA.Hall);
 				l.neighbors.add(AREA.Lounge);
 				break;
-			case HW3:
+			case HW_SL:
 				l.neighbors.add(AREA.Study);
 				l.neighbors.add(AREA.Library);
 				break;
-			case HW4:
+			case HW_HB:
 				l.neighbors.add(AREA.Hall);
 				l.neighbors.add(AREA.BilliardRoom);
 				break;
-			case HW5:
+			case HW_LD:
 				l.neighbors.add(AREA.Lounge);
 				l.neighbors.add(AREA.DiningRoom);
 				break;
-			case HW6:
+			case HW_LB:
 				l.neighbors.add(AREA.Library);
 				l.neighbors.add(AREA.BilliardRoom);
 				break;
-			case HW7:
+			case HW_BD:
 				l.neighbors.add(AREA.BilliardRoom);
 				l.neighbors.add(AREA.DiningRoom);
 				break;
-			case HW8:
+			case HW_LC:
 				l.neighbors.add(AREA.Library);
 				l.neighbors.add(AREA.Conservatory);
 				break;
-			case HW9:
+			case HW_BB:
 				l.neighbors.add(AREA.BilliardRoom);
 				l.neighbors.add(AREA.Ballroom);
 				break;
-			case HW10:
+			case HW_DK:
 				l.neighbors.add(AREA.DiningRoom);
 				l.neighbors.add(AREA.Kitchen);
 				break;
-			case HW11:
+			case HW_CB:
 				l.neighbors.add(AREA.Conservatory);
 				l.neighbors.add(AREA.Ballroom);
 				break;
-			case HW12:
+			case HW_BK:
 				l.neighbors.add(AREA.Ballroom);
 				l.neighbors.add(AREA.Kitchen);
 				break;
@@ -203,22 +203,22 @@ public class Board {
 		
 		switch (character) {
 		case ColMustard:
-			defaultArea = AREA.HW5;
+			defaultArea = AREA.HW_LD;
 			break;
 		case MrGreen:
-			defaultArea = AREA.HW11;
+			defaultArea = AREA.HW_CB;
 			break;
 		case MrsPeacock:
-			defaultArea = AREA.HW8;
+			defaultArea = AREA.HW_LC;
 			break;
 		case MrsWhite:
-			defaultArea = AREA.HW12;
+			defaultArea = AREA.HW_BK;
 			break;
 		case MsScarlet:
-			defaultArea = AREA.HW2;
+			defaultArea = AREA.HW_HL;
 			break;
 		case ProfPlum:
-			defaultArea = AREA.HW3;
+			defaultArea = AREA.HW_SL;
 			break;
 		}
 		
