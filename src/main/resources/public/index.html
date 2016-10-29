@@ -20,19 +20,41 @@
   			});
   			
   			$( "#join" ).click(function() {
+  				// TODO: get game object, display only available characters.
+  				// Prompt user to pick from list.
+  				var gameGuid = window.prompt("Enter game id", ""); 
+  				var characterName = window.prompt("Pick a character", "ProfPlum");
   				$.ajax({
   				  url: "api/game",
   				  method: 'POST',
-  				  data: { gameGuid: window.prompt("Enter game id", ""), characterChoice: Game._player.attr("name") }
+  				  data: { gameGuid: gameGuid, characterChoice:  characterName}
   				}).done(function(data) {
-  				  console.log("reply: " + data);
-  				  //document.gameGuid = data;
+  				  console.log("reply: " + JSON.stringify(data));
+  				  document.gameState = data;
+  				  Game.makePlayer(characterName);
+  				  
+  				  //Figure out where to place this player
+  				  var playerLocation;
+  				  var areasWithPlayers = document.gameState.board.locations.filter(function(l) { 
+  					  	return l.occupants.length > 0; 
+  					  });
+  				  areasWithPlayers.forEach(function(area) {
+					 	if(area.occupants.filter(function(player) {
+							return  player.character === characterName;
+					 }).length > 0) {
+						playerLocation = area;
+					 	} 
+				  });
+  				  
+  				  if (playerLocation) {
+  					  Game.moveToArea(playerLocation.name);
+  				  }
   				});
   			});
   			
   			$( "#get" ).click(function() {
   				$.ajax({
-  				  url: "api/game/" + document.gameGuid,
+  				  url: "api/game/" + document.gameState.name,
   				  method: 'GET'
   				}).done(function(data) {
   				  console.log("reply: " + JSON.stringify(data));

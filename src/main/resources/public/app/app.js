@@ -33,6 +33,11 @@ Game = {
 		Crafty.c('Hall', Components.hall);
 		Crafty.c('Suspect', Components.suspect);
 		
+		// Create board (grid, rooms, hallways)
+		Game.drawBoard();
+	},
+	
+	makePlayer(characterName) {
 		// Create entity (player object)
 		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 10);
 		Game._player.color("rgba(0,0,0,0.01)");
@@ -40,11 +45,8 @@ Game = {
 		Game._player.h = 70;
 		Game._player.z = 1000000000;
 		Game._player.css("background-size", "100%")
-		Game._player.attr("name", window.prompt("Pick a character", "ProfPlum"));
+		Game._player.attr("name", characterName);
 		Game._player.css("background-image", "url('images/" + Game._player.attr("name") + ".png')");
-		
-		// Create board (grid, rooms, hallways)
-		Game.drawBoard();
 	},
 	
 	// width of game board (in pixels)
