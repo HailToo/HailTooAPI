@@ -20,7 +20,12 @@ public class Game extends GameEntity {
 	public int currentMove = 0;
 	
 	public User getCurrentPlayer() {
-		return players.get(currentMove % players.size());
+		User ret = null;
+		if (players.size() > 0) {
+			ret = players.get(currentMove % players.size());
+		}
+		
+		return ret;
 	}
 	
 	/**
