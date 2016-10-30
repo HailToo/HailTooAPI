@@ -195,5 +195,16 @@ Game = {
 			}
 		}
 		
+	},
+	
+	pollGameState: function() {
+		GameService.getGameState(document.gameState.name).done(function(data) {
+			if(JSON.stringify(document.gameState) !== JSON.stringify(data)) {
+				console.log("game state has changed!");
+				document.gameState = data;
+			}
+			
+			setTimeout(Game.pollGameState, 5000);
+		});
 	}
 }
