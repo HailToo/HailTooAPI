@@ -28,6 +28,7 @@
   				// Prompt user to pick from list.
   				var gameGuid = window.prompt("Enter game id", "");
   				GameService.getGameState(gameGuid).done(function(data) {
+  					document.gameState = data;
   					var availableCharacters = document.characters;
   					console.log("all characters: " + document.characters);
   					data.players.forEach(function(p) {
@@ -41,9 +42,8 @@
   					console.log("character choice: " + characterName);
   	  				GameService.joinGame(gameGuid, characterName).done(function(data) {
   	  				  //console.log("reply: " + JSON.stringify(data));
-  	  				  document.gameState = data;
-  	  				  Game.makePlayer(characterName);
-  	  				  
+  	  				  //Game.makePlayer(characterName);
+
   	  				  //Figure out where to place this player
   	  				  var playerLocation;
   	  				  var areasWithPlayers = document.gameState.board.locations.filter(function(l) { 
@@ -58,7 +58,7 @@
   					  });
   	  				  
   	  				  if (playerLocation) {
-  	  					  Game.moveToArea(playerLocation.name);
+  	  					  Game.moveToArea(Game._player, playerLocation.name);
   	  				  }
   	  				  
   	  				  Game.pollGameState();
@@ -71,7 +71,6 @@
   			$( "#get" ).click(function() {
   				GameService.getGameState(document.gameState.name).done(function(data) {
   				  console.log("reply: " + JSON.stringify(data));
-  				  document.gameState = data;
   				});
   			});
   			

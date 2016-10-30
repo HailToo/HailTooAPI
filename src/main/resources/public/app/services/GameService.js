@@ -1,5 +1,6 @@
 GameService = {
 		getGameState: function(gameGuid) {
+			//console.log("query game status");
 			return $.ajax({
 			  url: "api/game/" + gameGuid,
 			  method: 'GET'

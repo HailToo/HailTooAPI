@@ -3,6 +3,7 @@ Game = {
 	_rooms: [],
 	_hallways: [],
 	_player: null,
+	_suspects: [],
 		
 	// Gameboard layout
 	board: {
@@ -39,7 +40,7 @@ Game = {
 	
 	makePlayer: function(characterName) {
 		// Create entity (player object)
-		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 10);
+		Game._player = Crafty.e('Player');//.at(Math.floor(Game.board.width / 2), Game.board.height - 10);
 		Game._player.color("rgba(0,0,0,0.01)");
 		Game._player.w = 35;
 		Game._player.h = 70;
@@ -47,6 +48,20 @@ Game = {
 		Game._player.css("background-size", "100%")
 		Game._player.attr("name", characterName);
 		Game._player.css("background-image", "url('images/" + Game._player.attr("name") + ".png')");
+	},
+	
+	makeSuspect: function(characterName) {
+		var suspect = Crafty.e('Suspect');//.at(Math.floor(Game.board.width / 2), Game.board.height - 10);
+		suspect.color("rgba(0,0,0,0.01)");
+		suspect.w = 35;
+		suspect.h = 70;
+		suspect.z = 1000000000;
+		suspect.css("background-size", "100%")
+		suspect.attr("name", characterName);
+		suspect.css("background-image", "url('images/" + suspect.attr("name") + ".png')");
+		Game._suspects.push(suspect);
+		
+		return suspect;
 	},
 	
 	// width of game board (in pixels)
@@ -169,7 +184,7 @@ Game = {
 		return hallway;
 	},
 	
-	moveToArea: function(areaName) {
+	moveToArea: function(actor, areaName) {
 		var targetRoom = this._rooms.filter(function(r) {
 			return r.attr("name") === areaName;
 		});
@@ -180,7 +195,7 @@ Game = {
 			//move player within the bounds of this room.
 			var targetX = (targetRoom.x + (targetRoom.w / 2)) / Game.board.tile.width;
 			var targetY = targetRoom.y / Game.board.tile.height;
-			Game._player.at(targetX, targetY);
+			actor.at(targetX, targetY);
 		} else {
 			//Check hallways
 			targetRoom = this._hallways.filter(function(h) {
@@ -190,8 +205,8 @@ Game = {
 				targetRoom = targetRoom[0];
 				//move player within the bounds of this room. 
 				var targetX = targetRoom.x / Game.board.tile.width;
-				var targetY = (targetRoom.y - (Game._player.h / 2)) / Game.board.tile.height;
-				Game._player.at(targetX, targetY);
+				var targetY = (targetRoom.y - (actor.h / 2)) / Game.board.tile.height;
+				actor.at(targetX, targetY);
 			}
 		}
 		
@@ -201,10 +216,40 @@ Game = {
 		GameService.getGameState(document.gameState.name).done(function(data) {
 			if(JSON.stringify(document.gameState) !== JSON.stringify(data)) {
 				console.log("game state has changed!");
-				document.gameState = data;
+				Game.updateDisplay(data);
 			}
 			
 			setTimeout(Game.pollGameState, 5000);
 		});
-	}
+	},
+	
+	updateDisplay: function(gameState) {
+		//Move all players to their appropriate positions
+		gameState.board.locations.forEach(function (location) {
+			location.occupants.forEach(function(player) {
+				var actor = Game.getActor(player.character);
+				if(actor === undefined || actor === null) {
+					//Add new suspect (must've joined since last state change).
+					actor = Game.makeSuspect(player.character);
+				} 
+				//Move actor
+				Game.moveToArea(actor, location.name);
+			});
+		});
+		
+		document.gameState = gameState;
+	},
+	
+	getActor: function(characterName) {
+		var allActors = [];
+		allActors.push(Game._player);
+		Game._suspects.forEach(function(suspect) {
+			allActors.push(suspect);
+		});
+		allActors.forEach(function(actor) {
+			if (actor !== null && actor.attr("name") === characterName) {
+				return actor;
+			}
+		});
+	},
 }

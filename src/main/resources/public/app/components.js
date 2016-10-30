@@ -23,14 +23,14 @@ Components = {
 	actor: {
 		init: function() {
 			//console.log('initializing component: actor.');
-		    this.requires('2D, Canvas, Grid');
+		    this.requires('2D, Canvas, Grid, Color, DOM');
 		  }
 	},
 	
 	player: {
 		init: function() {
 			//console.log('initializing component: player.');
-			this.requires('Actor, Color, Fourway, Collision, DOM')
+			this.requires('Actor, Fourway, Collision')
 				.color('rgba(0,0,0,0.01)')
 				.fourway(50)
 				.collides();
@@ -63,7 +63,7 @@ Components = {
 	
 	edge: {
 		init: function() {
-			this.requires('Actor, Color, Solid')
+			this.requires('Actor, Solid')
 				.color('#000000');
 		}
 	},
@@ -74,7 +74,7 @@ Components = {
 		init: function() {
 			//console.log('initializing component: room.');
 			
-			this.requires('Actor, Color, DOM')
+			this.requires('Actor')
 				.color('rgb(255, 255, 255)');
 			// 5 tiles wide
 			this.w = 10 * Game.board.tile.width;
@@ -104,7 +104,7 @@ Components = {
 	hall: {
 		init: function() {
 			//console.log('initializing component: hall.');
-			this.requires('Actor, Color, DOM')
+			this.requires('Actor')
 				.color('rgb(245, 245, 220)')
 				.css({
 					'border': '1px solid black'
@@ -113,7 +113,10 @@ Components = {
 	},
 	
 	suspect: {
-	
+		init: function() {
+			this.requires('Actor')
+				.color('rgba(0,0,0,0.01)');
+		}
 	}
 };
 
