@@ -17,6 +17,12 @@ public class Game extends GameEntity {
 	
 	private Random random = null;
 	
+	public int currentMove = 0;
+	
+	public User getCurrentPlayer() {
+		return players.get(currentMove % players.size());
+	}
+	
 	/**
 	 * Create solution
 	 */

@@ -4,10 +4,14 @@
   	<script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
   	<script src="app/app.js"></script>
   	<script src="app/components.js"></script>
+  	<script src="app/services/GameService.js"></script>
   	<script>window.addEventListener('load', Game.init);</script>
   	<script type="text/javascript">
   		$(document).ready(function() {
   			console.log("loaded.");
+  			GameService.characters().done(function(data) {
+  				document.characters = data;
+  			});
   			
   			$( "#create" ).click(function() {
   				$.ajax({
@@ -22,42 +26,50 @@
   			$( "#join" ).click(function() {
   				// TODO: get game object, display only available characters.
   				// Prompt user to pick from list.
-  				var gameGuid = window.prompt("Enter game id", ""); 
-  				var characterName = window.prompt("Pick a character", "ProfPlum");
-  				$.ajax({
-  				  url: "api/game",
-  				  method: 'POST',
-  				  data: { gameGuid: gameGuid, characterChoice:  characterName}
-  				}).done(function(data) {
-  				  console.log("reply: " + JSON.stringify(data));
-  				  document.gameState = data;
-  				  Game.makePlayer(characterName);
-  				  
-  				  //Figure out where to place this player
-  				  var playerLocation;
-  				  var areasWithPlayers = document.gameState.board.locations.filter(function(l) { 
-  					  	return l.occupants.length > 0; 
+  				var gameGuid = window.prompt("Enter game id", "");
+  				GameService.getGameState(gameGuid).done(function(data) {
+  					var availableCharacters = document.characters;
+  					console.log("all characters: " + document.characters);
+  					data.players.forEach(function(p) {
+  						if(availableCharacters.indexOf(p.character) >= 0) {
+  							availableCharacters.splice(availableCharacters.indexOf(p.character), 1);
+  						}
+  					})
+  					console.log("available characters: " + availableCharacters);
+  					
+  					var characterName = window.prompt("Pick a character", availableCharacters[0]);
+  					console.log("character choice: " + characterName);
+  	  				GameService.joinGame(gameGuid, characterName).done(function(data) {
+  	  				  //console.log("reply: " + JSON.stringify(data));
+  	  				  document.gameState = data;
+  	  				  Game.makePlayer(characterName);
+  	  				  
+  	  				  //Figure out where to place this player
+  	  				  var playerLocation;
+  	  				  var areasWithPlayers = document.gameState.board.locations.filter(function(l) { 
+  	  					  	return l.occupants.length > 0; 
+  	  					  });
+  	  				  areasWithPlayers.forEach(function(area) {
+  						 	if(area.occupants.filter(function(player) {
+  								return  player.character === characterName;
+  						 }).length > 0) {
+  							playerLocation = area;
+  						 	} 
   					  });
-  				  areasWithPlayers.forEach(function(area) {
-					 	if(area.occupants.filter(function(player) {
-							return  player.character === characterName;
-					 }).length > 0) {
-						playerLocation = area;
-					 	} 
-				  });
-  				  
-  				  if (playerLocation) {
-  					  Game.moveToArea(playerLocation.name);
-  				  }
+  	  				  
+  	  				  if (playerLocation) {
+  	  					  Game.moveToArea(playerLocation.name);
+  	  				  }
+  	  				});
   				});
+  				
+  				
   			});
   			
   			$( "#get" ).click(function() {
-  				$.ajax({
-  				  url: "api/game/" + document.gameState.name,
-  				  method: 'GET'
-  				}).done(function(data) {
+  				GameService.getGameState(document.gameState.name).done(function(data) {
   				  console.log("reply: " + JSON.stringify(data));
+  				  document.gameState = data;
   				});
   			});
   			

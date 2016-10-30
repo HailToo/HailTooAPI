@@ -3,12 +3,10 @@ package edu.hail.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import edu.hail.DataGenerator;
 import edu.hail.models.Board;
 import edu.hail.models.Board.Location;
 import edu.hail.models.Game;
 import edu.hail.models.GameEntity;
-import edu.hail.models.Room;
 import edu.hail.models.User;
 
 import javax.servlet.http.Cookie;

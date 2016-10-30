@@ -37,7 +37,7 @@ Game = {
 		Game.drawBoard();
 	},
 	
-	makePlayer(characterName) {
+	makePlayer: function(characterName) {
 		// Create entity (player object)
 		Game._player = Crafty.e('Player').at(Math.floor(Game.board.width / 2), Game.board.height - 10);
 		Game._player.color("rgba(0,0,0,0.01)");
@@ -93,7 +93,7 @@ Game = {
 		}
 	},
 	
-	makeRoom(name) {
+	makeRoom: function(name) {
 		var atX, atY;
 		switch(name) {
 			case 'Study':
@@ -142,7 +142,7 @@ Game = {
 		this._rooms.push(room);
 	},
 	
-	makeHallway(room1, room2) {
+	makeHallway: function(room1, room2) {
 		var x = 0, y = 0, w = 0, h = 0;
 		var name = "HW_" + room1.attr("name").substring(0,1) + room2.attr("name").substring(0,1);
 		// Determine width/height of hallway
@@ -169,7 +169,7 @@ Game = {
 		return hallway;
 	},
 	
-	moveToArea(areaName) {
+	moveToArea: function(areaName) {
 		var targetRoom = this._rooms.filter(function(r) {
 			return r.attr("name") === areaName;
 		});
