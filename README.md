@@ -8,8 +8,16 @@
 
 ## Current state
 
-Right now this is just a really generic REST api as a SpringBoot app.
-The intent is to enable a multi-concurrent-user stateful game and use JWT to identify which game and player is submitting a move from their client.
+Java RESTful API uses the SpringBoot framework and persists game state and provides validation for multiplayer logic.
+JavaScript client application utilizes the CraftyJS framework for an interactive graphical interface (gameboard, characters, etc).
 
-## Image sources
-room images sourced from http://s294.photobucket.com/user/bigcluefan/media/Clue%20Classic/SampleBoard.jpg.html
+### GUI
+<img src="https://raw.githubusercontent.com/HailToo/HailTooAPI/master/docs/game_board_screencap.png">
+
+### Image sources
+Room images sourced from <a href="http://s294.photobucket.com/user/bigcluefan/media/Clue%20Classic/SampleBoard.jpg.html">bigcluefan</a> on Photobucket.
+
+Character images sourced from <a href="http://www.goodrichgraphics.com/Images/Cartoon/originals/zenmation/8-CLUE-style-characters.gif">Goodrich Graphics</a>.
+
+## Licensing
+HailToo is a project satisfying an assignment for a university educational program.  HailToo is available publically through the MIT license; we do not endorse the duplication of this code to satisfy another university project (either the same class or others).
