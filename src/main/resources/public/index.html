@@ -1,10 +1,11 @@
 <html>
   <head>
-  	<script src="https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"></script>
-  	<script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+  	<script src="lib/crafty-min.js"></script>
+  	<script src="lib/jquery-3.1.0.min.js"></script>
   	<script src="app/app.js"></script>
   	<script src="app/components.js"></script>
   	<script src="app/services/GameService.js"></script>
+  	<script src="app/helpers/CraftyHelper.js"></script>
   	<script>window.addEventListener('load', Game.init);</script>
   	<script type="text/javascript">
   		$(document).ready(function() {
@@ -14,58 +15,34 @@
   			});
   			
   			$( "#create" ).click(function() {
-  				$.ajax({
-  				  url: "api/game",
-  				  method: 'PUT'
-  				}).done(function(data) {
-  				  console.log("reply: " + data);
-  				  document.gameGuid = data;
-  				});
+  				document.gameGuid = GameService.newGame();
+  				console.log("Game ID: " + document.gameGuid);
   			});
   			
   			$( "#join" ).click(function() {
-  				// TODO: get game object, display only available characters.
-  				// Prompt user to pick from list.
+  				// TODO: Prompt user to pick from list.
   				var gameGuid = window.prompt("Enter game id", "");
   				GameService.getGameState(gameGuid).done(function(data) {
   					document.gameState = data;
+  					
+  					//Determine which characters are available to choose from
   					var availableCharacters = document.characters;
-  					console.log("all characters: " + document.characters);
   					data.players.forEach(function(p) {
+  						//Remove any character from available list if it's already taken
   						if(availableCharacters.indexOf(p.character) >= 0) {
   							availableCharacters.splice(availableCharacters.indexOf(p.character), 1);
   						}
-  					})
-  					console.log("available characters: " + availableCharacters);
+  					});
   					
+  					//Prompt user for character choice
   					var characterName = window.prompt("Pick a character", availableCharacters[0]);
+  					Game._user.character = characterName;
   					console.log("character choice: " + characterName);
-  	  				GameService.joinGame(gameGuid, characterName).done(function(data) {
-  	  				  //console.log("reply: " + JSON.stringify(data));
-  	  				  //Game.makePlayer(characterName);
-
-  	  				  //Figure out where to place this player
-  	  				  var playerLocation;
-  	  				  var areasWithPlayers = document.gameState.board.locations.filter(function(l) { 
-  	  					  	return l.occupants.length > 0; 
-  	  					  });
-  	  				  areasWithPlayers.forEach(function(area) {
-  						 	if(area.occupants.filter(function(player) {
-  								return  player.character === characterName;
-  						 }).length > 0) {
-  							playerLocation = area;
-  						 	} 
-  					  });
-  	  				  
-  	  				  if (playerLocation) {
-  	  					  Game.moveToArea(Game._player, playerLocation.name);
-  	  				  }
-  	  				  
-  	  				  Game.pollGameState();
+  	  				
+  					GameService.joinGame(gameGuid, characterName).done(function(data) {			  
+						Game.pollGameState();
   	  				});
   				});
-  				
-  				
   			});
   			
   			$( "#get" ).click(function() {
@@ -74,14 +51,15 @@
   				});
   			});
   			
-  			document.cookie = "USER_TOKEN=" + window.prompt("Enter username", "");
-  			
+  			Game._user.name = window.prompt("Enter username", "");
+  			document.cookie = "USER_TOKEN=" + Game._user.name;
   		});
   	</script>
   </head>
   <body>
   	<h1 id="title"></h1>
     <div id="game"></div>
+    <!--  TODO: <div id="playerInfo" style="width:300px;height:300px;border:1px solid black;">info panel</div> -->
   </body>
   <footer>
   	<button id="create">Create</button>
