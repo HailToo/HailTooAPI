@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
-//apply plugin: 'war'
+apply plugin: 'maven'
 
 ext {
     mainClassName = 'edu.hail.BootApplication'
@@ -76,6 +76,33 @@ def createSecretProperties(final String key) {
 	def props = new Properties()
 	props.put('jwt.secret', key)
 	
+	//inject version just for reference
+	props.put('application.version', project['version'])
+	
 	def file = new File("${projectDir}/src/main/resources/secret.properties")
-	props.store(file.newWriter(), null)
+	props.store(file.newWriter(), "$appName volatile properties")
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        //configuration = configurations.deployerJars
+        if (project.hasProperty('deployUrl') && project.hasProperty('deployPath')
+        			&& project.hasProperty('deployUser') && project.hasProperty('deployKey')) { 
+        	repository(url: "scp://${deployUrl}/${deployPath}") {
+            	authentication(userName: "${deployUser}", privateKey: "${deployKey}")
+        	}
+        }
+    }
+}
+
+task deploy(type: Exec) {
+	dependsOn build
+	executable "sh"
+	if (project.hasProperty('deployUrl') && project.hasProperty('deployPath')
+        			&& project.hasProperty('deployUser') && project.hasProperty('deployKey')) {
+		args "-c", "ssh -i $deployKey $deployUser@$deployUrl 'sudo kill -9 \$(sudo cat /home/$deployUser/boot.pid); sudo rm /home/$deployUser/HailToo-${version}.jar || true;';scp -i $deployKey build/libs/HailToo-${version}.jar $deployUser@$deployUrl:$deployPath;ssh -i $deployKey $deployUser@$deployUrl 'sudo nohup java -jar /home/$deployUser/HailToo-${version}.jar </dev/null >/home/$deployUser/boot.out 2>&1 & echo \$! >/home/$deployUser/boot.pid'"
+		println "ssh -i $deployKey $deployUser@$deployUrl 'sudo kill -9 \$(cat /home/$deployUser/boot.pid); sudo rm /home/$deployUser/HailToo-${version}.jar || true; sudo rm /home/$deployUser/boot.pid || true; sudo rm /home/$deployUser/boot.out' || true;scp -i $deployKey build/libs/HailToo-${version}.jar $deployUser@$deployUrl:$deployPath;ssh -i $deployKey $deployUser@$deployUrl 'sudo nohup java -jar /home/$deployUser/HailToo-${version}.jar </dev/null >/home/$deployUser/boot.out 2>&1 & echo \$! >/home/$deployUser/boot.pid'"
+	} else {
+		args "-c", "echo 'Unable to deploy without neccessary values in gradle.properties.' && false;"
+	}
 }

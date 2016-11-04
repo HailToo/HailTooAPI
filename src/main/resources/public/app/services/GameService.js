@@ -27,5 +27,13 @@ GameService = {
 			method: 'PUT',
 			async: false
 		}).responseText;
+	},
+	
+	getVersion: function() {
+		return $.ajax({
+			url: "version",
+			method: 'GET',
+			async: false
+		}).responseText;
 	}
 };

@@ -20,10 +20,11 @@
 .modal-content {
 	display: none;
 	z-index: 2;
-    position: fixed;
+    position: relative;
+    margin: 0 auto;
     bottom: 0;
     background-color: #fefefe;
-    width: 100%;
+    width: 50%;
     -webkit-animation-name: slideIn;
     -webkit-animation-duration: 0.4s;
     animation-name: slideIn;
@@ -45,13 +46,13 @@
     cursor: pointer;
 }
 
-.modal-header {
+.modal-body {
     padding: 2px 16px;
-    background-color: #5cb85c;
+    background-color: #d8d8d8;
     color: white;
+    border-radius: 10px;
+    text-align: center;
 }
-
-.modal-body {padding: 2px 16px;}
 
 .modal-footer {
     padding: 2px 16px;

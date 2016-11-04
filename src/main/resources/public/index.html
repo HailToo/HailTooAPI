@@ -14,6 +14,10 @@
   	<script type="text/javascript">
   		$(document).ready(function() {
   			console.log("loaded.");
+  			
+  			//Show current version
+  			NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
+  			
   			GameService.characters().done(function(data) {
   				document.characters = data;
   			});
@@ -63,16 +67,9 @@
   <body>
   	<h1 id="title"></h1>
   	<div id="modalDialog" class="modal-content">
-	  <div class="modal-header">
-	    <span class="close">×</span>
-	    <h2>Modal Header</h2>
-	  </div>
 	  <div class="modal-body">
-	    <p>Some text in the Modal Body</p>
-	    <p>Some other text...</p>
-	  </div>
-	  <div class="modal-footer">
-	    <h3 style="font-size:smaller">Modal Footer</h3>
+	    <span class="close">×</span>
+	    <p>Modal body</p>
 	  </div>
 	</div>
     <div id="game"></div>
