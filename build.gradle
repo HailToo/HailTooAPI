@@ -98,10 +98,18 @@ uploadArchives {
 task deploy(type: Exec) {
 	dependsOn build
 	executable "sh"
+	def cmd = "ssh -i $deployKey $deployUser@$deployUrl '\
+				mkdir -p /home/$deployUser/jarchive;\
+				kill -9 \$(cat /home/$deployUser/boot.pid); \
+				mv /home/$deployUser/HailToo-*.jar /home/$deployUser/jarchive/ || true;';\
+			scp -i $deployKey build/libs/HailToo-${version}.jar $deployUser@$deployUrl:$deployPath;\
+			ssh -i $deployKey $deployUser@$deployUrl '\
+				nohup java -jar /home/$deployUser/HailToo-${version}.jar </dev/null >/home/$deployUser/boot.out 2>&1 & echo \$! >/home/$deployUser/boot.pid'"
 	if (project.hasProperty('deployUrl') && project.hasProperty('deployPath')
         			&& project.hasProperty('deployUser') && project.hasProperty('deployKey')) {
-		args "-c", "ssh -i $deployKey $deployUser@$deployUrl 'sudo kill -9 \$(sudo cat /home/$deployUser/boot.pid); sudo rm /home/$deployUser/HailToo-${version}.jar || true;';scp -i $deployKey build/libs/HailToo-${version}.jar $deployUser@$deployUrl:$deployPath;ssh -i $deployKey $deployUser@$deployUrl 'sudo nohup java -jar /home/$deployUser/HailToo-${version}.jar </dev/null >/home/$deployUser/boot.out 2>&1 & echo \$! >/home/$deployUser/boot.pid'"
-		println "ssh -i $deployKey $deployUser@$deployUrl 'sudo kill -9 \$(cat /home/$deployUser/boot.pid); sudo rm /home/$deployUser/HailToo-${version}.jar || true; sudo rm /home/$deployUser/boot.pid || true; sudo rm /home/$deployUser/boot.out' || true;scp -i $deployKey build/libs/HailToo-${version}.jar $deployUser@$deployUrl:$deployPath;ssh -i $deployKey $deployUser@$deployUrl 'sudo nohup java -jar /home/$deployUser/HailToo-${version}.jar </dev/null >/home/$deployUser/boot.out 2>&1 & echo \$! >/home/$deployUser/boot.pid'"
+		args "-c", cmd
+		
+		println cmd
 	} else {
 		args "-c", "echo 'Unable to deploy without neccessary values in gradle.properties.' && false;"
 	}
