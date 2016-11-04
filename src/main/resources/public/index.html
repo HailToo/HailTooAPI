@@ -1,10 +1,14 @@
 <html>
   <head>
+	<link rel="stylesheet" href="css/modal.css">
+  
+  
   	<script src="lib/crafty-min.js"></script>
   	<script src="lib/jquery-3.1.0.min.js"></script>
   	<script src="app/app.js"></script>
   	<script src="app/components.js"></script>
   	<script src="app/services/GameService.js"></script>
+  	<script src="app/helpers/NotificationHelper.js"></script>
   	<script src="app/helpers/CraftyHelper.js"></script>
   	<script>window.addEventListener('load', Game.init);</script>
   	<script type="text/javascript">
@@ -58,6 +62,19 @@
   </head>
   <body>
   	<h1 id="title"></h1>
+  	<div id="modalDialog" class="modal-content">
+	  <div class="modal-header">
+	    <span class="close">×</span>
+	    <h2>Modal Header</h2>
+	  </div>
+	  <div class="modal-body">
+	    <p>Some text in the Modal Body</p>
+	    <p>Some other text...</p>
+	  </div>
+	  <div class="modal-footer">
+	    <h3 style="font-size:smaller">Modal Footer</h3>
+	  </div>
+	</div>
     <div id="game"></div>
     <!--  TODO: <div id="playerInfo" style="width:300px;height:300px;border:1px solid black;">info panel</div> -->
   </body>
