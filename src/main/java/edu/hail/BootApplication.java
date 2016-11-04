@@ -32,7 +32,7 @@ public class BootApplication {
 	public FilterRegistrationBean jwtFilter() {
         FilterRegistrationBean reg = new FilterRegistrationBean();
         reg.setFilter(new JwtFilter());
-        reg.addUrlPatterns("/api");
+        reg.addUrlPatterns("/hail/api");
         return reg;
 	}
 
