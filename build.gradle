@@ -6,7 +6,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "net.saliman:gradle-cobertura-plugin:2.3.2" 
 	}
 }
 
@@ -15,6 +16,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'maven'
+apply plugin: 'net.saliman.cobertura'
 
 ext {
     mainClassName = 'edu.hail.BootApplication'
@@ -31,17 +33,20 @@ jar {
 }
 
 test {
-	def secretKey
-	if (project.hasProperty('secretKey')) {
-		secretKey = "${secretKey}"
-	} else {
-		secretKey = UUID.randomUUID().toString()
-	}
-	createSecretProperties(secretKey)
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+cobertura {
+	coverageFormats = ['html', 'xml']              
+	coverageIgnoreTrivial = true                   
+	coverageIgnores = ['org.slf4j.Logger.*']           
+	coverageReportDir = file("$buildDir/reports/cobertura")    
+	
+}
+
+test.finalizedBy(project.tasks.cobertura)
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
@@ -53,6 +58,8 @@ dependencies {
     compile('com.google.code.gson:gson:2.6.2')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.easymock:easymock:3.4')
+	testCompile('org.mockito:mockito-all:1.10.19')
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
@@ -72,16 +79,19 @@ task wrapper(type: Wrapper) {
 	gradleVersion = '2.12'
 }
 
-def createSecretProperties(final String key) {
+task createApplicationProperties() {
 	def props = new Properties()
-	props.put('jwt.secret', key)
+	props.put('server.port', '8454')
+	props.put('server.context-path', '/hail/')
+	props.put('spring.mvc.throw-exception-if-no-handler-found', 'true')
 	
-	//inject version just for reference
+	//volatile properties (change per build)
 	props.put('application.version', project['version'])
 	
-	def file = new File("${projectDir}/src/main/resources/secret.properties")
-	props.store(file.newWriter(), "$appName volatile properties")
+	def file = new File("${projectDir}/src/main/resources/application.properties")
+	props.store(file.newWriter(), "$appName properties")
 }
+build.dependsOn createApplicationProperties
 
 uploadArchives {
     repositories.mavenDeployer {
@@ -108,8 +118,6 @@ task deploy(type: Exec) {
 	if (project.hasProperty('deployUrl') && project.hasProperty('deployPath')
         			&& project.hasProperty('deployUser') && project.hasProperty('deployKey')) {
 		args "-c", cmd
-		
-		println cmd
 	} else {
 		args "-c", "echo 'Unable to deploy without neccessary values in gradle.properties.' && false;"
 	}
