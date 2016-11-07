@@ -99,14 +99,17 @@ Game = {
 	},
 	
 	getActor: function(characterName) {
+		var ret = null;
 		Game._suspects.forEach(function(actor) {
 			if (actor !== null && actor.attr("name") === characterName) {
-				return actor;
+				ret = actor;
 			}
 		});
+		
+		return ret;
 	},
 	
 	finishSetup: function(data) {
 		
-	}
+	},
 }

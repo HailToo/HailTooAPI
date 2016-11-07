@@ -18,6 +18,12 @@
   			//Show current version
   			NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
   			
+  			Game._user.name = window.prompt("Enter username", "");
+  			var authToken = GameService.login({ username: Game._user.name }).done(function(data) {
+  				console.log("Auth token received: " + data.token);
+  	  			GameService.setAuthToken(data.token);	
+  			});
+  			
   			GameService.characters().done(function(data) {
   				document.characters = data;
   			});
@@ -58,9 +64,6 @@
   				  console.log("reply: " + JSON.stringify(data));
   				});
   			});
-  			
-  			Game._user.name = window.prompt("Enter username", "");
-  			document.cookie = "USER_TOKEN=" + Game._user.name;
   		});
   	</script>
   </head>
