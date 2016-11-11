@@ -96,8 +96,7 @@ build.dependsOn createApplicationProperties
 uploadArchives {
     repositories.mavenDeployer {
         //configuration = configurations.deployerJars
-        if (project.hasProperty('deployUrl') && project.hasProperty('deployPath')
-        			&& project.hasProperty('deployUser') && project.hasProperty('deployKey')) { 
+        if(deploymentEnabled()) {
         	repository(url: "scp://${deployUrl}/${deployPath}") {
             	authentication(userName: "${deployUser}", privateKey: "${deployKey}")
         	}
@@ -107,18 +106,22 @@ uploadArchives {
 
 task deploy(type: Exec) {
 	dependsOn build
+	def cmd = ""
 	executable "sh"
-	def cmd = "ssh -i $deployKey $deployUser@$deployUrl '\
-				mkdir -p /home/$deployUser/jarchive;\
-				kill -9 \$(cat /home/$deployUser/boot.pid); \
-				mv /home/$deployUser/HailToo-*.jar /home/$deployUser/jarchive/ || true;';\
-			scp -i $deployKey build/libs/HailToo-${version}.jar $deployUser@$deployUrl:$deployPath;\
-			ssh -i $deployKey $deployUser@$deployUrl '\
-				nohup java -jar /home/$deployUser/HailToo-${version}.jar </dev/null >/home/$deployUser/boot.out 2>&1 & echo \$! >/home/$deployUser/boot.pid'"
-	if (project.hasProperty('deployUrl') && project.hasProperty('deployPath')
-        			&& project.hasProperty('deployUser') && project.hasProperty('deployKey')) {
-		args "-c", cmd
+	if(deploymentEnabled()) {
+		cmd = "ssh -i $deployKey $deployUser@$deployUrl '\
+					mkdir -p /home/$deployUser/jarchive;\
+					kill -9 \$(cat /home/$deployUser/boot.pid); \
+					mv /home/$deployUser/HailToo-*.jar /home/$deployUser/jarchive/ || true;';\
+				scp -i $deployKey build/libs/HailToo-${version}.jar $deployUser@$deployUrl:$deployPath;\
+				ssh -i $deployKey $deployUser@$deployUrl '\
+					nohup java -jar /home/$deployUser/HailToo-${version}.jar </dev/null >/home/$deployUser/boot.out 2>&1 & echo \$! >/home/$deployUser/boot.pid'"
 	} else {
-		args "-c", "echo 'Unable to deploy without neccessary values in gradle.properties.' && false;"
+		cmd = "echo 'Unable to deploy without neccessary values in gradle.properties.' && false;"
 	}
+	args "-c", cmd
+}
+
+def deploymentEnabled() {
+ return project.hasProperty('deployUrl') && project.hasProperty('deployPath') && project.hasProperty('deployUser') && project.hasProperty('deployKey')
 }
