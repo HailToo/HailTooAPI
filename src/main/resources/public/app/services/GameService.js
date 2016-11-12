@@ -69,5 +69,12 @@ GameService = {
 			method: 'POST',
 			data: { gameGuid: gameGuid, area: area }
 		});
+	},
+	
+	start: function(gameGuid) {
+		return GameService.ajax({
+			url: "api/game/" + gameGuid + "/start",
+			method: 'POST'
+		});
 	}
 };

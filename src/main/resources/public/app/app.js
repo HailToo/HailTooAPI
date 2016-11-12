@@ -46,11 +46,12 @@ Game = {
 		$( "#create" ).click(function() {
 			document.gameGuid = GameService.newGame();
 			console.log("Game ID: " + document.gameGuid);
+			$('#join').click();
 		});
 		
 		$( "#join" ).click(function() {
 			// TODO: Prompt user to pick from list.
-			var gameGuid = window.prompt("Enter game id", "");
+			var gameGuid = window.prompt("Enter game id", document.gameGuid);
 			GameService.getGameState(gameGuid).done(function(data) {
 				document.gameState = data;
 				
@@ -111,9 +112,13 @@ Game = {
 	
 	pollGameState: function() {
 		GameService.getGameState(document.gameState.name).done(function(data) {
-			if(JSON.stringify(document.gameState) !== JSON.stringify(data)) {
-				console.log("game state has changed!");
-				Game.updateDisplay(data);
+			try {
+				if(JSON.stringify(document.gameState) !== JSON.stringify(data)) {
+					console.log("game state has changed!");
+					Game.updateDisplay(data);
+				}
+			} catch(err) {
+				console.log("error: " + err);
 			}
 			
 			setTimeout(Game.pollGameState, 5000);
@@ -132,6 +137,12 @@ Game = {
 				} 
 				//Move actor
 				Game.moveToArea(actor, location.name);
+				
+				// Current player
+				if (player.name === Game._user.name) {
+					//Update hand on screen
+					NotificationHelper.populateHand(player.cards);
+				}
 			});
 		});
 		
@@ -151,5 +162,5 @@ Game = {
 	
 	finishSetup: function(data) {
 		
-	},
+	}
 }

@@ -231,4 +231,11 @@ public class GameController {
     	
     	return ret;
     }
+    
+    @RequestMapping(value="/game/{gameGuid}/start", method = RequestMethod.POST)
+    public @ResponseBody boolean start(HttpServletRequest req, @PathVariable String gameGuid) {
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	game.start();
+    	return true;
+    }
 }

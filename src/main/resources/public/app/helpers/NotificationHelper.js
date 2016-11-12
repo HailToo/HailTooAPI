@@ -14,5 +14,11 @@ NotificationHelper = {
 	
 	hideModal: function () {
 		$("#modalDialog").css("display", "none");
+	},
+	
+	populateHand: function(cards) {
+		var displayArea = $('#hand');
+		
+		//displ
 	}
 };

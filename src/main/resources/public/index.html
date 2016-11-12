@@ -14,7 +14,7 @@
   	<script>window.addEventListener('load', Splash.init);</script>
   	<script type="text/javascript">
   		$(document).ready(function() {
-  			
+  			Game.init();
   		});
   	</script>
   </head>
@@ -22,16 +22,18 @@
   	<h1 id="title"></h1>
   	<div id="modalDialog" class="modal-content">
 	  <div class="modal-body">
-	    <span class="close">×</span>
+	    <span class="close">X</span>
 	    <p>Modal body</p>
 	  </div>
 	</div>
     <div id="game"></div>
     <!--  TODO: <div id="playerInfo" style="width:300px;height:300px;border:1px solid black;">info panel</div> -->
+    <div id="hand"></div>
   </body>
   <footer>
   	<button id="create">Create</button>
   	<button id="join">Join Game</button>
   	<button id="get">Get Game</button>
+  	<button id="start">Start Game</button>
   </footer>
 </html>
