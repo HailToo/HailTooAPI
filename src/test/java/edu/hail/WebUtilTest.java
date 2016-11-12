@@ -34,7 +34,7 @@ public class WebUtilTest {
 		Assert.assertNotEquals(token1, token3);
 		
 		Claims c = WebUtil.parseToken(token1, mockSecret);
-		Assert.assertTrue(c.get("name").equals(USERNAME));
+		Assert.assertTrue(c.getSubject().equals(USERNAME));
 	}
 	
 	/**

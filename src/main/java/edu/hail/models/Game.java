@@ -9,10 +9,16 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import edu.hail.WebUtil;
 import edu.hail.models.Board.Location;
 
 public class Game extends GameEntity {
+	
+	private static final Log log = LogFactory.getLog(Game.class);
+	
 	public List<User> players;
 	private Board.AREA _room;
 	private Board.WEAPON _weapon;
@@ -25,6 +31,8 @@ public class Game extends GameEntity {
 	private Random random = null;
 	
 	public int currentMove = 0;
+	
+	public boolean isActive = false;
 	
 	public User getCurrentPlayer() {
 		User ret = null;
@@ -40,7 +48,14 @@ public class Game extends GameEntity {
 	 */
 	public Game() {
 		board = new Board();
+		players = new ArrayList<User>();
+	}
+	
+	public void start() {
 		int rand = 0;
+		
+		List<String> cardDeck = getDeck();
+		
 		// Select the room
 		Board.Location l = null;
 		do {
@@ -57,7 +72,41 @@ public class Game extends GameEntity {
 		rand = getRandomInt(Board.CHARACTER.values().length);
 		_suspect = Board.CHARACTER.values()[rand];
 		
-		players = new ArrayList<User>();
+		// Remove the selected cards from the deck
+		cardDeck.remove(_room.toString());
+		cardDeck.remove(_weapon.toString());
+		cardDeck.remove(_suspect.toString());
+		
+		// Deal out deck
+		if (this.players.size() > 0) {
+			for(int i = 0; cardDeck.size() > 0; i = (i + 1) % this.players.size()) {
+				rand = getRandomInt(cardDeck.size());
+				this.players.get(i).cards.add(cardDeck.get(rand));
+				cardDeck.remove(rand);
+			}
+		} else {
+			log.warn("A game was started without any players, therefore no cards will be dealt.");
+		}
+		
+		this.isActive = true;
+	}
+	
+	private List<String> getDeck() {
+		List<String> cardDeck = new ArrayList<String>();
+		
+		for (Location l : board.getLocations()) {
+			if (l.isRoom) {
+				cardDeck.add(l.name.toString());
+			}
+		}
+		for (Board.CHARACTER c : Board.CHARACTER.values()) {
+			cardDeck.add(c.toString());
+		}
+		for (Board.WEAPON w : Board.WEAPON.values()) {
+			cardDeck.add(w.toString());
+		}
+		
+		return cardDeck;
 	}
 	
 	public boolean solve(String roomName, String weaponName, String suspectName) {
@@ -95,6 +144,7 @@ public class Game extends GameEntity {
 	public void addPlayer(User user) {
 		Board.Location defaultPlayerLocation = board.getDefaultLocation(user.character);
 		defaultPlayerLocation.occupants.add(user);
+		this.players.add(user);
 	}
 	
 	public User getPlayer(HttpServletRequest req) {
@@ -118,11 +168,11 @@ public class Game extends GameEntity {
     		}
     	}
     	
-    	//Validate that the move is allow
+    	// Validate that the move is allow
     	if (this.getCurrentPlayer().name.equals(player.name) && currentLocation.neighbors.contains(moveTo) && futureLocation.occupants.size() < futureLocation.capacity()) {
-    		//remove player from current location
+    		// Remove player from current location
     		currentLocation.occupants.removeIf(x->x.name.equals(player.name));
-    		//add player to new location
+    		// Add player to new location
     		futureLocation.occupants.add(player);
     		ret = true;
     	} 

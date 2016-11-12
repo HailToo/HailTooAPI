@@ -1,7 +1,7 @@
 package edu.hail.models;
 
 import org.junit.Test;
-
+import edu.hail.models.Board.CHARACTER;
 import edu.hail.models.Game;
 import org.junit.Assert;
 
@@ -12,6 +12,7 @@ public class GameTest {
 		Game g = null;
 		
 		g = new Game();
+		g.start();
 		
 		Assert.assertNotNull("Solution must have a room.", g.getRoom());
 		System.out.println("Room: " + g.getRoom());
@@ -26,6 +27,7 @@ public class GameTest {
 		Game g = null;
 		
 		g = new Game();
+		g.start();
 		
 		String solutionRoom = g.getRoom().name();
 		String solutionWeapon = g.getWeapon().name();
@@ -49,7 +51,34 @@ public class GameTest {
 		}
 		Assert.assertEquals(9, roomCount);
 		Assert.assertEquals(12, hallCount);
+	}
+	
+	@Test
+	public void cardDealingTest() {
+		Game g = null;
 		
+		g = new Game();
 		
+		// Add fake players
+		for (int i = 0; i < 5; i++) {
+			User u = new User("test_" + i, null);
+			u.character = CHARACTER.values()[i];
+			g.addPlayer(u);
+		}
+		g.start();
+		
+
+		for(User u : g.players) {
+			// Does each player have cards
+			Assert.assertTrue(u.cards.size() > 0);
+
+			// Ensure no solution cards are in anyone's hands
+			Assert.assertFalse(u.cards.contains(g.getRoom().name()));
+			Assert.assertFalse(u.cards.contains(g.getWeapon().name()));
+			Assert.assertFalse(u.cards.contains(g.getSuspect().name()));
+			
+			// TODO: Ensure no one has the same card as another
+			
+		}
 	}
 }
