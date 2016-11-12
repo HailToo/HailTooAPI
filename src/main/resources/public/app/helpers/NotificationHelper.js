@@ -17,8 +17,14 @@ NotificationHelper = {
 	},
 	
 	populateHand: function(cards) {
-		var displayArea = $('#hand');
-		
-		//displ
+		var $list = $('#cardList');
+
+		$.each(cards, function(i, name) {
+			var $li = $('<li class="loading">').appendTo($list);
+
+			$('<img>').appendTo($li).one('load', function() {
+				$li.removeClass('loading');
+			}).attr('src', "images/" + name + ".png");
+		})
 	}
 };

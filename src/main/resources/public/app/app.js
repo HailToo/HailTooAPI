@@ -3,6 +3,7 @@ Game = {
 	_rooms: [],
 	_hallways: [],
 	_suspects: [],
+	isLoaded: false,
 		
 	// Gameboard layout
 	board: {
@@ -42,44 +43,6 @@ Game = {
 		GameService.characters().done(function(data) {
 			document.characters = data;
 		});
-		
-		$( "#create" ).click(function() {
-			document.gameGuid = GameService.newGame();
-			console.log("Game ID: " + document.gameGuid);
-			$('#join').click();
-		});
-		
-		$( "#join" ).click(function() {
-			// TODO: Prompt user to pick from list.
-			var gameGuid = window.prompt("Enter game id", document.gameGuid);
-			GameService.getGameState(gameGuid).done(function(data) {
-				document.gameState = data;
-				
-				//Determine which characters are available to choose from
-				var availableCharacters = document.characters;
-				data.players.forEach(function(p) {
-					//Remove any character from available list if it's already taken
-					if(availableCharacters.indexOf(p.character) >= 0) {
-						availableCharacters.splice(availableCharacters.indexOf(p.character), 1);
-					}
-				});
-				
-				//Prompt user for character choice
-				var characterName = window.prompt("Pick a character", availableCharacters[0]);
-				Game._user.character = characterName;
-				console.log("character choice: " + characterName);
-  				
-				GameService.joinGame(gameGuid, characterName).done(function(data) {			  
-				Game.pollGameState();
-  				});
-			});
-		});
-		
-		$( "#get" ).click(function() {
-			GameService.getGameState(document.gameState.name).done(function(data) {
-			  console.log("reply: " + JSON.stringify(data));
-			});
-		});
 	},
 	
 	moveToArea: function(actor, areaName) {
@@ -99,7 +62,7 @@ Game = {
 			targetRoom = this._hallways.filter(function(h) {
 				return h.attr("name") === areaName;
 			});
-			if(targetRoom !== null) {
+			if(targetRoom !== null && targetRoom.length === 1) {
 				targetRoom = targetRoom[0];
 				//move player within the bounds of this room. 
 				var targetX = targetRoom.x / Game.board.tile.width;
@@ -115,13 +78,17 @@ Game = {
 			try {
 				if(JSON.stringify(document.gameState) !== JSON.stringify(data)) {
 					console.log("game state has changed!");
-					Game.updateDisplay(data);
+					// HACK - Don't try to draw on the board until all objects on the board are defined/drawn.
+					// This is a [bad] solution to a race-condition with scene loading and how we draw the game board.
+					if (Game.isLoaded) {
+						Game.updateDisplay(data);
+					}
 				}
 			} catch(err) {
 				console.log("error: " + err);
 			}
 			
-			setTimeout(Game.pollGameState, 5000);
+			setTimeout(Game.pollGameState, 3000);
 		});
 	},
 	
@@ -135,6 +102,7 @@ Game = {
 					actor = CraftyHelper.createCharacter(player.character);
 					Game._suspects.push(actor);
 				} 
+
 				//Move actor
 				Game.moveToArea(actor, location.name);
 				

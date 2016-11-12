@@ -32,24 +32,24 @@ Splash = {
 		      .textColor("#FFFFFF")
 		      .bind('Click', function(MouseEvent){
 		      	//Prompt user for gameId to join
-		      	$('#join').click();
+		      	MenuHelper.join();
 		      	
 		      	//Show game board
-		      	Splash.load_scene("GameBoard", 2000);
+		      	Splash.load_scene("GameBoard", 500);
 		      });
 		
 	      //Splash option: "Create Game" 
 		  Crafty.e("2D, DOM, Text, Mouse")
 		      .attr({ w: 300, h: 20, x: 100, y: Game.height() - 30 })
 		      .text("Create Game")
-		      .css({ "text-align": "center"})
+		      .css({ "text-align": "center", "cursor": "pointer"})
 		      .textFont({size: '20px', weight: 'bold'})
 		      .textColor("#FFFFFF")
 		      .bind('Click', function(MouseEvent){
-		      	$('#create').click();
+		      	MenuHelper.create();
 		      	
 		      	//Show game board
-		      	Splash.load_scene("GameBoard", 2000);
+		      	Splash.load_scene("GameBoard", 500);
 		      });
 		});
 		
@@ -79,6 +79,8 @@ Splash = {
 					Game._hallways.push(CraftyHelper.makeHallway(Game._rooms[i], Game._rooms[i + 3]));
 				}
 			}
+
+			Game.isLoaded = true;
 		});
 		
 		Crafty.defineScene("Splash1", function(){
@@ -110,7 +112,7 @@ Splash = {
 	
 	load_scene: function(scene, duration) {
 	    Crafty.e("2D, Canvas, Tween, Color")
-	        .attr({alpha:0.0, x:0, y:0, w:800, h:600})
+	        .attr({alpha:0.0, x:0, y:0, w:Game.width(), h:Game.height()})
 	        .color("#000000")
 	        .tween({alpha: 1.0}, duration)
 	        .bind("TweenEnd", function() {

@@ -1,6 +1,7 @@
 <html>
   <head>
 	<link rel="stylesheet" href="css/modal.css">
+  <link rel="stylesheet" href="css/HailToo.css">
   
   
   	<script src="lib/crafty-min.js"></script>
@@ -11,10 +12,17 @@
   	<script src="app/helpers/NotificationHelper.js"></script>
   	<script src="app/helpers/CraftyHelper.js"></script>
   	<script src="app/helpers/LoadScreenHelper.js"></script>
+    <script src="app/helpers/MenuHelper.js"></script>
   	<script>window.addEventListener('load', Splash.init);</script>
   	<script type="text/javascript">
   		$(document).ready(function() {
   			Game.init();
+
+        // Register menu buttons
+        $( "#create" ).click(MenuHelper.create);
+        $( "#join" ).click(MenuHelper.join);
+        $( "#get" ).click(MenuHelper.get);
+        $( "#start" ).click(MenuHelper.start);
   		});
   	</script>
   </head>
@@ -28,7 +36,7 @@
 	</div>
     <div id="game"></div>
     <!--  TODO: <div id="playerInfo" style="width:300px;height:300px;border:1px solid black;">info panel</div> -->
-    <div id="hand"></div>
+    <ul id="cardList"></ul>
   </body>
   <footer>
   	<button id="create">Create</button>

@@ -1,0 +1,32 @@
+li {
+    list-style: none;
+    width: 100px;
+    height: 100px;
+    float: left;
+    margin-right: 20px;
+    background: #127F6F;
+}
+
+li.loading {
+    animation: pulsate infinite alternate .3s;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    transition: opacity 1s;
+}
+
+li.loading img {
+    opacity: 0;
+}
+
+@keyframes pulsate {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.8;
+    }
+}
+
