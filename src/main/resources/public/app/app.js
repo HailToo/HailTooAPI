@@ -32,7 +32,7 @@ Game = {
 		console.log("loaded.");
 			
 		//Show current version
-		NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
+		//NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
 		
 		Game._user.name = window.prompt("Enter username", "");
 		var authToken = GameService.login({ username: Game._user.name }).done(function(data) {
@@ -115,6 +115,9 @@ Game = {
 		});
 		
 		document.gameState = gameState;
+		
+		//Prompt player for move/suggestion
+		Game.prompt();
 	},
 	
 	getActor: function(characterName) {
@@ -128,7 +131,7 @@ Game = {
 		return ret;
 	},
 	
-	finishSetup: function(data) {
-		
+	prompt: function() {
+		//Splash.load_scene("Prompt");
 	}
 }

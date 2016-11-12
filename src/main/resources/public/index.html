@@ -1,11 +1,14 @@
 <html>
   <head>
 	<link rel="stylesheet" href="css/modal.css">
-  <link rel="stylesheet" href="css/HailToo.css">
+  	<link rel="stylesheet" href="css/HailToo.css">
+  	<link rel="stylesheet" href="css/bootstrap.min.css">
   
   
   	<script src="lib/crafty-min.js"></script>
   	<script src="lib/jquery-3.1.0.min.js"></script>
+  	<script src="lib/bootstrap.min.js"></script>
+  	<script src="lib/jquery.leanModal.min.js"></script>
   	<script src="app/app.js"></script>
   	<script src="app/components.js"></script>
   	<script src="app/services/GameService.js"></script>
@@ -37,6 +40,26 @@
     <div id="game"></div>
     <!--  TODO: <div id="playerInfo" style="width:300px;height:300px;border:1px solid black;">info panel</div> -->
     <ul id="cardList"></ul>
+    <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
   </body>
   <footer>
   	<button id="create">Create</button>

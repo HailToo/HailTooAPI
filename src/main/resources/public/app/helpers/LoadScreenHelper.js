@@ -83,12 +83,29 @@ Splash = {
 			Game.isLoaded = true;
 		});
 		
-		Crafty.defineScene("Splash1", function(){
-		  Crafty.background('#FFFFFF no-repeat center center');
-		  Splash.load_scene("HomeScreen", 1000);
+		Crafty.defineScene("Prompt", function() {
+			Crafty.background('#127F6F no-repeat center center');
+			//Splash title
+			  Crafty.e("2D, DOM, Text")
+			      .attr({ w:400, h:40, x: 50, y: 50})
+			      .text("It's your turn...")
+			      .textFont({size:'40px', weight:'bold'})
+			      .css({"text-align": "center", "curser": "default"})
+			      .textColor("#FFFFFF");
+			  
+//			  Crafty.e("HTML")
+//			  	.attr({x:20, y:20, w:100, h:100})
+//			  	.append("<div>" +
+//			  				"<select class=''>"
+//			  			"</div>");
 		});
 		
-		Splash.load_scene("Splash1", 1000);
+		Crafty.defineScene("Splash1", function() {
+		  Crafty.background('#FFFFFF no-repeat center center');
+		  Splash.load_scene("HomeScreen", 500);
+		});
+		
+		Splash.load_scene("Splash1", 100);
 
 	},
 	
