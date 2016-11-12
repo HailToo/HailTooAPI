@@ -92,6 +92,12 @@ Game = {
 				} 
 				//Move actor
 				Game.moveToArea(actor, location.name);
+				
+				// Current player
+				if (player.name === Game._user.name) {
+					//Update hand on screen
+					NotificationHelper.populateHand(player.cards);
+				}
 			});
 		});
 		
