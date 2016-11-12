@@ -8,7 +8,9 @@ Splash = {
 	levelWidth: 1600,
 	
 	init: function() {
-		Crafty.init(Splash.screenWidth, Splash.screenHeight, document.getElementById('game'));
+		//Crafty.init(Splash.screenWidth, Splash.screenHeight, document.getElementById('loader'));
+		Crafty.init(Game.width(), Game.height(), document.getElementById('game'));
+		CraftyHelper.registerComponents();
 		
 		Crafty.defineScene("HomeScreen", function() {
 		  Crafty.background("#000");
@@ -19,7 +21,7 @@ Splash = {
 		      .textFont({size: '20px', weight: 'bold'})
 		      .textColor("#FFFFFF")
 		      .bind('Click', function(MouseEvent){
-		        Game.init();
+		      	Splash.load_scene("GameBoard", 2000);
 		      });
 		
 		      Crafty.e("2D, DOM, Text")
@@ -30,17 +32,41 @@ Splash = {
 		      .textColor("#FFFFFF");
 		});
 		
-		Crafty.defineScene("Splash1", function(){
-		  Crafty.background('#FFFFFF no-repeat center center');
-		  Splash.load_scene("HomeScreen", 3000);
+		Crafty.defineScene("GameBoard", function() {
+			Crafty.background('green');
+			
+			// Traverse the entire board (per tile)
+			CraftyHelper.drawEdge(Game.board.width, Game.board.height);
+			
+			//Draw each room
+			Game._rooms.push(CraftyHelper.makeRoom('Study'));
+			Game._rooms.push(CraftyHelper.makeRoom('Hall'));
+			Game._rooms.push(CraftyHelper.makeRoom('Lounge'));
+			Game._rooms.push(CraftyHelper.makeRoom('Library'));
+			Game._rooms.push(CraftyHelper.makeRoom('BilliardRoom'));
+			Game._rooms.push(CraftyHelper.makeRoom('DiningRoom'));
+			Game._rooms.push(CraftyHelper.makeRoom('Conservatory'));
+			Game._rooms.push(CraftyHelper.makeRoom('Ballroom'));
+			Game._rooms.push(CraftyHelper.makeRoom('Kitchen'));
+			
+			// Create hallways between rooms
+			for (var i = 0; i < Game._rooms.length - 1; ++i) {
+				if (i === 0 || i % 3 !==  2) {
+					Game._hallways.push(CraftyHelper.makeHallway(Game._rooms[i], Game._rooms[i + 1]));
+				}
+				if (i < Game._rooms.length - 3) {
+					Game._hallways.push(CraftyHelper.makeHallway(Game._rooms[i], Game._rooms[i + 3]));
+				}
+			}
 		});
 		
-		Splash.load_scene("Splash1", 3000);
+		Crafty.defineScene("Splash1", function(){
+		  Crafty.background('#FFFFFF no-repeat center center');
+		  Splash.load_scene("HomeScreen", 1000);
+		});
 		
-		Crafty.bind("EnterFrame", function(){
-			  if (Crafty.frame() % 2 == 0)
-			    Splash.drop();
-			});
+		Splash.load_scene("Splash1", 1000);
+
 	},
 	
 	drop: function()

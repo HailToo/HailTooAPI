@@ -1,41 +1,13 @@
 CraftyHelper = {
-	drawBoard: function() {
-		// Initialize game
-		Crafty.init(Game.width(), Game.height(), document.getElementById('game'));
-		
-		// Background
-		Crafty.background('green');
-		
-		// Traverse the entire board (per tile)
-		for (var x = 0; x < Game.board.width; ++x) {
-			for (var y = 0; y < Game.board.height; ++y) {
-				// Draw the edge of the board
-				if (x === 0 || x === Game.board.width - 1 || y ===0 || y === Game.board.height - 1) {
-					Crafty.e('Edge').at(x, y);
-				} 
-			}
-		}
-		
-		//Draw each room
-		Game._rooms.push(CraftyHelper.makeRoom('Study'));
-		Game._rooms.push(CraftyHelper.makeRoom('Hall'));
-		Game._rooms.push(CraftyHelper.makeRoom('Lounge'));
-		Game._rooms.push(CraftyHelper.makeRoom('Library'));
-		Game._rooms.push(CraftyHelper.makeRoom('BilliardRoom'));
-		Game._rooms.push(CraftyHelper.makeRoom('DiningRoom'));
-		Game._rooms.push(CraftyHelper.makeRoom('Conservatory'));
-		Game._rooms.push(CraftyHelper.makeRoom('Ballroom'));
-		Game._rooms.push(CraftyHelper.makeRoom('Kitchen'));
-		
-		// Create hallways between rooms
-		for (var i = 0; i < Game._rooms.length - 1; ++i) {
-			if (i === 0 || i % 3 !==  2) {
-				Game._hallways.push(CraftyHelper.makeHallway(Game._rooms[i], Game._rooms[i + 1]));
-			}
-			if (i < Game._rooms.length - 3) {
-				Game._hallways.push(CraftyHelper.makeHallway(Game._rooms[i], Game._rooms[i + 3]));
-			}
-		}
+	// Register components of the game
+	registerComponents: function() {
+		Crafty.c('Grid', Components.grid);
+		Crafty.c('Actor', Components.actor);
+		Crafty.c('Player', Components.player);
+		Crafty.c('Edge', Components.edge);
+		Crafty.c('Room', Components.room);
+		Crafty.c('Hall', Components.hall);
+		Crafty.c('Suspect', Components.suspect);
 	},
 		
 	makeRoom: function(name) {
@@ -122,5 +94,16 @@ CraftyHelper = {
 		suspect.attr("name", characterName);
 		suspect.css("background-image", "url('images/" + suspect.attr("name") + ".png')");
 		return suspect;
+	},
+	
+	drawEdge: function(width, height) {
+		for (var x = 0; x < width; ++x) {
+			for (var y = 0; y < height; ++y) {
+				// Draw the edge of the board
+				if (x === 0 || x === width - 1 || y ===0 || y === height - 1) {
+					Crafty.e('Edge').at(x, y);
+				} 
+			}
+		}
 	}
 };

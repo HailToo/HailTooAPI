@@ -28,69 +28,57 @@ Game = {
 	},
 
 	init: function() {
-		// Register components of the game
-		Crafty.c('Grid', Components.grid);
-		Crafty.c('Actor', Components.actor);
-		Crafty.c('Player', Components.player);
-		Crafty.c('Edge', Components.edge);
-		Crafty.c('Room', Components.room);
-		Crafty.c('Hall', Components.hall);
-		Crafty.c('Suspect', Components.suspect);
-		
-		// Create board (grid, rooms, hallways)
-		CraftyHelper.drawBoard();
-		
 		console.log("loaded.");
 			
-			//Show current version
-			NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
-			
-			Game._user.name = window.prompt("Enter username", "");
-			var authToken = GameService.login({ username: Game._user.name }).done(function(data) {
-				console.log("Auth token received: " + data.token);
-	  			GameService.setAuthToken(data.token);	
-			});
-			
-			GameService.characters().done(function(data) {
-				document.characters = data;
-			});
-			
-			$( "#create" ).click(function() {
-				document.gameGuid = GameService.newGame();
-				console.log("Game ID: " + document.gameGuid);
-			});
-			
-			$( "#join" ).click(function() {
-				// TODO: Prompt user to pick from list.
-				var gameGuid = window.prompt("Enter game id", "");
-				GameService.getGameState(gameGuid).done(function(data) {
-					document.gameState = data;
-					
-					//Determine which characters are available to choose from
-					var availableCharacters = document.characters;
-					data.players.forEach(function(p) {
-						//Remove any character from available list if it's already taken
-						if(availableCharacters.indexOf(p.character) >= 0) {
-							availableCharacters.splice(availableCharacters.indexOf(p.character), 1);
-						}
-					});
-					
-					//Prompt user for character choice
-					var characterName = window.prompt("Pick a character", availableCharacters[0]);
-					Game._user.character = characterName;
-					console.log("character choice: " + characterName);
-	  				
-					GameService.joinGame(gameGuid, characterName).done(function(data) {			  
-					Game.pollGameState();
-	  				});
+		//Show current version
+		NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
+		
+		Game._user.name = window.prompt("Enter username", "");
+		var authToken = GameService.login({ username: Game._user.name }).done(function(data) {
+			console.log("Auth token received: " + data.token);
+  			GameService.setAuthToken(data.token);	
+		});
+		
+		GameService.characters().done(function(data) {
+			document.characters = data;
+		});
+		
+		$( "#create" ).click(function() {
+			document.gameGuid = GameService.newGame();
+			console.log("Game ID: " + document.gameGuid);
+		});
+		
+		$( "#join" ).click(function() {
+			// TODO: Prompt user to pick from list.
+			var gameGuid = window.prompt("Enter game id", "");
+			GameService.getGameState(gameGuid).done(function(data) {
+				document.gameState = data;
+				
+				//Determine which characters are available to choose from
+				var availableCharacters = document.characters;
+				data.players.forEach(function(p) {
+					//Remove any character from available list if it's already taken
+					if(availableCharacters.indexOf(p.character) >= 0) {
+						availableCharacters.splice(availableCharacters.indexOf(p.character), 1);
+					}
 				});
+				
+				//Prompt user for character choice
+				var characterName = window.prompt("Pick a character", availableCharacters[0]);
+				Game._user.character = characterName;
+				console.log("character choice: " + characterName);
+  				
+				GameService.joinGame(gameGuid, characterName).done(function(data) {			  
+				Game.pollGameState();
+  				});
 			});
-			
-			$( "#get" ).click(function() {
-				GameService.getGameState(document.gameState.name).done(function(data) {
-				  console.log("reply: " + JSON.stringify(data));
-				});
+		});
+		
+		$( "#get" ).click(function() {
+			GameService.getGameState(document.gameState.name).done(function(data) {
+			  console.log("reply: " + JSON.stringify(data));
 			});
+		});
 	},
 	
 	moveToArea: function(actor, areaName) {
