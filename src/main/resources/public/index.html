@@ -21,12 +21,13 @@
   		$(document).ready(function() {
   			Game.init();
 
-        // Register menu buttons
-        $( "#b_get" ).click(MenuHelper.get);
-        $( "#b_start" ).click(MenuHelper.start);
-        $( "#b_promptMove").click(Game.promptMove);
-        $( "#b_promptSuggestion").click(Game.promptSuggestion);
-        
+	        // Register menu buttons
+	        $( "#b_get" ).click(MenuHelper.get);
+	        $( "#b_start" ).click(MenuHelper.start);
+	        $( "#b_promptMove").click(Game.promptMove);
+	        $( "#b_promptSuggestion").click(Game.promptSuggestion);
+	        $( "#b_doMove").click(Game.doMove);
+	        $( "#b_doSuggestion").click(Game.doSuggestion);
   		});
   	</script>
   </head>
@@ -75,7 +76,7 @@
           </select>
         </div>
         <div class="modal-footer" style="text-align: center;">
-          <button type="button" class="" onclick='doMove'>Move</button>
+          <button id="b_doMove" type="button">Move</button>
         </div>
       </div>
     </div>
@@ -98,7 +99,7 @@
           <select class="weapons"></select>
         </div>
         <div class="modal-footer" style="text-align: center;">
-          <button type="button" class="" onclick='doSuggestion'>Accuse</button>
+          <button id="b_doSuggestion" type="button">Accuse</button>
         </div>
       </div>
     </div>

@@ -174,6 +174,8 @@ public class Game extends GameEntity {
     		currentLocation.occupants.removeIf(x->x.name.equals(player.name));
     		// Add player to new location
     		futureLocation.occupants.add(player);
+    		
+    		currentMove++;
     		ret = true;
     	} 
 		

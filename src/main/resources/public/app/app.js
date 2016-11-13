@@ -183,6 +183,17 @@ Game = {
 		GameService.weapons().done(function(data){
 			GeneralHelper.populateDropdown('select.weapons', data);
 		});
+	},
+	
+	doMove: function() {
+		// Get user's choice
+		var moveTo = $('select.moves').val()
+		GameService.move(document.gameState.name, moveTo).done(function(data) {
+			if (data) {
+				$('#hail_move').modal("hide");
+				console.log("user has moved!")
+			}
+		});
 	}
 	
 }
