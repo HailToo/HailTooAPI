@@ -91,7 +91,7 @@ public class Game extends GameEntity {
 		this.isActive = true;
 	}
 	
-	private List<String> getDeck() {
+	protected List<String> getDeck() {
 		List<String> cardDeck = new ArrayList<String>();
 		
 		for (Location l : board.getLocations()) {
@@ -174,6 +174,8 @@ public class Game extends GameEntity {
     		currentLocation.occupants.removeIf(x->x.name.equals(player.name));
     		// Add player to new location
     		futureLocation.occupants.add(player);
+    		
+    		currentMove++;
     		ret = true;
     	} 
 		

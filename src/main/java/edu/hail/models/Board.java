@@ -76,6 +76,15 @@ public class Board {
 		return null;
 	}
 	
+	public Location getLocation(CHARACTER occupant) {
+		for (Location l : locations) {
+			if (l.occupants.stream().anyMatch(x-> x.character.equals(occupant)))
+				return l;
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Generate the list of all possible locations on the board 
 	 * and their direct neighbors (location through their doorways). 

@@ -1,96 +1,114 @@
 <html>
   <head>
-	<link rel="stylesheet" href="css/modal.css">
+	<link rel="stylesheet" href="css/HailToo.css">
+  	<link rel="stylesheet" href="css/bootstrap.min.css">
   
   
   	<script src="lib/crafty-min.js"></script>
   	<script src="lib/jquery-3.1.0.min.js"></script>
+  	<script src="lib/bootstrap.min.js"></script>
+  	<script src="lib/jquery.leanModal.min.js"></script>
   	<script src="app/app.js"></script>
   	<script src="app/components.js"></script>
   	<script src="app/services/GameService.js"></script>
   	<script src="app/helpers/NotificationHelper.js"></script>
   	<script src="app/helpers/CraftyHelper.js"></script>
-  	<script>window.addEventListener('load', Game.init);</script>
+  	<script src="app/helpers/LoadScreenHelper.js"></script>
+    <script src="app/helpers/MenuHelper.js"></script>
+    <script src="app/helpers/GeneralHelper.js"></script>
+  	<script>window.addEventListener('load', Splash.init);</script>
   	<script type="text/javascript">
   		$(document).ready(function() {
-  			console.log("loaded.");
-  			
-  			//Show current version
-  			NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
-  			
-  			Game._user.name = window.prompt("Enter username", "");
-  			var authToken = GameService.login({ username: Game._user.name }).done(function(data) {
-  				console.log("Auth token received: " + data.token);
-  	  			GameService.setAuthToken(data.token);	
-  			});
-  			
-  			GameService.characters().done(function(data) {
-  				document.characters = data;
-  			});
-  			
-  			$( "#create" ).click(function() {
-  				document.gameGuid = GameService.newGame();
-  				console.log("Game ID: " + document.gameGuid);
-  				$('#join').click();
-  			});
-  			
-  			$( "#join" ).click(function() {
-  				// TODO: Prompt user to pick from list.
-  				var gameGuid = window.prompt("Enter game id", document.gameGuid);
-  				GameService.getGameState(gameGuid).done(function(data) {
-  					document.gameState = data;
-  					
-  					//Determine which characters are available to choose from
-  					var availableCharacters = document.characters;
-  					data.players.forEach(function(p) {
-  						//Remove any character from available list if it's already taken
-  						if(availableCharacters.indexOf(p.character) >= 0) {
-  							availableCharacters.splice(availableCharacters.indexOf(p.character), 1);
-  						}
-  					});
-  					
-  					//Prompt user for character choice
-  					var characterName = window.prompt("Pick a character", availableCharacters[0]);
-  					Game._user.character = characterName;
-  					console.log("character choice: " + characterName);
-  	  				
-  					GameService.joinGame(gameGuid, characterName).done(function(data) {			  
-						Game.pollGameState();
-  	  				});
-  				});
-  			});
-  			
-  			$( "#get" ).click(function() {
-  				GameService.getGameState(document.gameState.name).done(function(data) {
-  				  console.log("reply: " + JSON.stringify(data));
-  				});
-  			});
-  			
-  			$( "#start" ).click(function() {
-  				GameService.start(document.gameState.name).done(function(data) {
-  				  console.log("reply: " + JSON.stringify(data));
-  				});
+  			Game.init();
 
-  			});
+	        // Register menu buttons
+	        $( "#b_get" ).click(MenuHelper.get);
+	        $( "#b_start" ).click(MenuHelper.start);
+	        $( "#b_promptMove").click(Game.promptMove);
+	        $( "#b_promptSuggestion").click(Game.promptSuggestion);
+	        $( "#b_doMove").click(Game.doMove);
+	        $( "#b_doSuggestion").click(Game.doSuggestion);
   		});
   	</script>
   </head>
   <body>
-  	<h1 id="title"></h1>
-  	<div id="modalDialog" class="modal-content">
-	  <div class="modal-body">
-	    <span class="close">×</span>
-	    <p>Modal body</p>
-	  </div>
-	</div>
-    <div id="game"></div>
-    <!--  TODO: <div id="playerInfo" style="width:300px;height:300px;border:1px solid black;">info panel</div> -->
-    <div id="hand"></div>
+	<div id="game"></div>
+    <ul id="cardList"></ul>
+
+<!-- Buttons for testing -->
+    <button id="b_get">Get Game</button>
+    <button id="b_start">Start Game</button>
+    <!-- Button trigger modal -->
+    <button type="button" data-toggle="modal" data-target="#hail_prompt">It's your turn</button>
+    <button type="button" data-toggle="modal" data-target="#hail_move">Move</button>
+    <button type="button" data-toggle="modal" data-target="#hail_suggestion">Suggest</button>
+ 
+  <!-- Main Player Prompt -->
+  <div class="modal fade" id="hail_prompt" tabindex="-1" role="dialog" aria-labelledby="hail_promptLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_promptLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <h1>It's your turn...</h1>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button id="b_promptMove" type="button" class="" onclick='promptMove'>Move?</button>
+          <button id="b_promptSuggestion" type="button" class="" onclick='promptSuggestion'>Accuse!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Move Prompt -->
+  <div class="modal fade" id="hail_move" tabindex="-1" role="dialog" aria-labelledby="hail_moveLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_moveLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <p> todo, show options</p>
+          <select class="moves">
+          </select>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button id="b_doMove" type="button">Move</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggestion Prompt -->
+  <div class="modal fade" id="hail_suggestion" tabindex="-1" role="dialog" aria-labelledby="hail_suggestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_suggestionLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <p> todo, preloaded room</p>
+          <select class="rooms"></select>
+          <p> todo, show options - suspect</p>
+          <select class="suspects"></select>
+          <p> todo, show options - weapon</p>
+          <select class="weapons"></select>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button id="b_doSuggestion" type="button">Accuse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   </body>
-  <footer>
-  	<button id="create">Create</button>
-  	<button id="join">Join Game</button>
-  	<button id="get">Get Game</button>
-  	<button id="start">Start Game</button>
+  <footer style="bottom:0px; position: absolute;">
+  	<div>
+  		<span id="version">{insert version here}</span>
+	</div>
   </footer>
 </html>

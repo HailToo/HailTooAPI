@@ -167,6 +167,10 @@ public class GameController {
     		throw new Exception("Unable to join game, maximum players reached.");
     	}
     	
+    	if (game.isActive) {
+    		throw new Exception("Unable to join game, already in progress.");
+    	}
+    	
     	for (Iterator<User> i = game.players.iterator(); i.hasNext();) {
     		if (i.next().character.equals(characterChoice)) {
     			throw new Exception("Character unavailable, please choose another character.");
@@ -215,6 +219,19 @@ public class GameController {
     	Game game = (Game) db.get("games").get(gameGuid);
     	return game.solve(room, weapon, suspect);
     	//TODO if true - game is finished, notify all players.
+    }
+    
+    @RequestMapping(value="/game/{gameGuid}/move", method = RequestMethod.GET)
+    public @ResponseBody List<Board.AREA> getAvailableMoves(HttpServletRequest req, @PathVariable String gameGuid) {
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	User user = game.getPlayer(req);
+    	if (game.getCurrentPlayer().equals(user)) {
+	    	// Get available moves for this player
+	    	Location userLocation = game.board.getLocation(user.character);
+	    	return userLocation.neighbors;
+    	} else {
+    		return null;
+    	}
     }
     
     @RequestMapping(value="/game/{gameGuid}/move", method = RequestMethod.POST)

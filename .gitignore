@@ -12,3 +12,4 @@ gradle.properties
 *.iws
 .springBeans
 .DS_Store
+application.properties
