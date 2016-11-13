@@ -68,7 +68,7 @@ public class GameTest {
 		}
 		g.start();
 		
-
+		int cardCount = 0;
 		for(User u : g.players) {
 			// Does each player have cards
 			Assert.assertTrue(u.cards.size() > 0);
@@ -80,7 +80,11 @@ public class GameTest {
 			
 			// TODO: Ensure no one has the same card as another
 			
+			// tally total cards dealt
+			cardCount += u.cards.size();			
 		}
+		
+		Assert.assertEquals(cardCount, g.getDeck().size() - 3);
 	}
 	
 	@Test

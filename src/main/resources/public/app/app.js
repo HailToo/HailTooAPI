@@ -171,6 +171,18 @@ Game = {
 		
 		// Toggle suggestion modal ON
 		$('#hail_suggestion').modal("show");
+		
+		// TODO - pre-load current room in list.
+		GeneralHelper.populateDropdown('select.rooms', [ 'current room']);
+		// Get available suspects, populate list
+		GameService.characters().done(function(data){
+			GeneralHelper.populateDropdown('select.suspects', data);
+		});
+
+		// Get available weapons, populate list
+		GameService.weapons().done(function(data){
+			GeneralHelper.populateDropdown('select.weapons', data);
+		});
 	}
 	
 }

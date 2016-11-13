@@ -91,7 +91,7 @@ public class Game extends GameEntity {
 		this.isActive = true;
 	}
 	
-	private List<String> getDeck() {
+	protected List<String> getDeck() {
 		List<String> cardDeck = new ArrayList<String>();
 		
 		for (Location l : board.getLocations()) {

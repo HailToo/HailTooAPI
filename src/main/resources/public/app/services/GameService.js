@@ -29,6 +29,13 @@ GameService = {
 		});
 	},
 	
+	weapons: function() {
+		return GameService.ajax({
+			url: "api/weapons",
+			method: 'GET'
+		});
+	},
+	
 	joinGame: function(gameGuid, characterName) {
 		return GameService.ajax({
 			url: "api/game",

@@ -15,6 +15,7 @@
   	<script src="app/helpers/CraftyHelper.js"></script>
   	<script src="app/helpers/LoadScreenHelper.js"></script>
     <script src="app/helpers/MenuHelper.js"></script>
+    <script src="app/helpers/GeneralHelper.js"></script>
   	<script>window.addEventListener('load', Splash.init);</script>
   	<script type="text/javascript">
   		$(document).ready(function() {
@@ -90,8 +91,11 @@
         </div>
         <div class="modal-body">
           <p> todo, preloaded room</p>
+          <select class="rooms"></select>
           <p> todo, show options - suspect</p>
+          <select class="suspects"></select>
           <p> todo, show options - weapon</p>
+          <select class="weapons"></select>
         </div>
         <div class="modal-footer" style="text-align: center;">
           <button type="button" class="" onclick='doSuggestion'>Accuse</button>
