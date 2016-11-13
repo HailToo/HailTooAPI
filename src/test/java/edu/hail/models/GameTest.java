@@ -2,6 +2,7 @@ package edu.hail.models;
 
 import org.junit.Test;
 import edu.hail.models.Board.CHARACTER;
+import edu.hail.models.Board.Location;
 import edu.hail.models.Game;
 import org.junit.Assert;
 
@@ -79,6 +80,35 @@ public class GameTest {
 			
 			// TODO: Ensure no one has the same card as another
 			
+		}
+	}
+	
+	@Test
+	public void LocationRetrievalTest() {
+		Game g = null;
+		
+		g = new Game();
+		
+		// Add fake players
+		for (int i = 0; i < 5; i++) {
+			User u = new User("test_" + i, null);
+			u.character = CHARACTER.values()[i];
+			g.addPlayer(u);
+		}
+		g.start();
+		
+		// Verify that ballroom has the expected neighbors
+		Location ballroom = g.board.getLocation(Board.AREA.Ballroom);
+		Assert.assertTrue(ballroom.neighbors.size() == 3);
+		Assert.assertTrue(ballroom.neighbors.contains(Board.AREA.HW_CB));
+		Assert.assertTrue(ballroom.neighbors.contains(Board.AREA.HW_BB));
+		Assert.assertTrue(ballroom.neighbors.contains(Board.AREA.HW_BK));
+		
+		// Verify each player's location can be retrieved
+		for(User u : g.players) {
+			Location idk = g.board.getLocation(u.character);
+			Assert.assertNotNull(idk);
+			Assert.assertTrue(idk.neighbors.size() >= 2);
 		}
 	}
 }

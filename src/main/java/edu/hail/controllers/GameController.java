@@ -221,6 +221,19 @@ public class GameController {
     	//TODO if true - game is finished, notify all players.
     }
     
+    @RequestMapping(value="/game/{gameGuid}/move", method = RequestMethod.GET)
+    public @ResponseBody List<Board.AREA> getAvailableMoves(HttpServletRequest req, @PathVariable String gameGuid) {
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	User user = game.getPlayer(req);
+    	if (game.getCurrentPlayer().equals(user)) {
+	    	// Get available moves for this player
+	    	Location userLocation = game.board.getLocation(user.character);
+	    	return userLocation.neighbors;
+    	} else {
+    		return null;
+    	}
+    }
+    
     @RequestMapping(value="/game/{gameGuid}/move", method = RequestMethod.POST)
     public @ResponseBody boolean move(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam Board.AREA area) {
     	boolean ret = false;

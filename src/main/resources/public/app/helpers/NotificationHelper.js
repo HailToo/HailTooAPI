@@ -24,7 +24,8 @@ NotificationHelper = {
 
 			$('<img>').appendTo($li).one('load', function() {
 				$li.removeClass('loading');
-			}).attr('src', "images/" + name + ".png");
+			}).attr('src', "images/" + name + ".png")
+			.attr('style', 'width:100px; height:100px;');
 		})
 	}
 };

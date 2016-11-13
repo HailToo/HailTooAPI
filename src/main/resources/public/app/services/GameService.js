@@ -76,5 +76,12 @@ GameService = {
 			url: "api/game/" + gameGuid + "/start",
 			method: 'POST'
 		});
+	},
+	
+	getMoves: function(gameGuid) {
+		return GameService.ajax({
+			url: "api/game/" + gameGuid + "/move",
+			method: 'GET'
+		});
 	}
 };

@@ -146,6 +146,22 @@ Game = {
 		
 		// Toggle move modal ON
 		$('#hail_move').modal("show");
+		
+		// Get available moves, populate list
+		GameService.getMoves(document.gameState.name).done(function(data){
+			if (data !== null && data.length > 0) {
+				data.forEach(function(element) {
+					console.log("adding move: " + element);
+					$('select.moves').append($("<option></option>")
+		                    .attr("value", element)
+		                    .text(element));
+				})
+			} else {
+				console.log("no available moves were returned!");
+			}
+		});
+		
+		//
 	},
 	
 	promptSuggestion: function() {
