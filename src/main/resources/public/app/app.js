@@ -32,7 +32,11 @@ Game = {
 		console.log("loaded.");
 			
 		//Show current version
-		//NotificationHelper.modalAlert("HailToo " + GameService.getVersion(), 5000);
+		try {
+			$('#version').text(GameService.getVersion())
+		} catch (err) {
+			console.log("failed to get version information.");
+		}
 		
 		Game._user.name = window.prompt("Enter username", "");
 		var authToken = GameService.login({ username: Game._user.name }).done(function(data) {
