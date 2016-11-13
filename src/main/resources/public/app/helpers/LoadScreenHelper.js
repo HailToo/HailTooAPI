@@ -25,9 +25,9 @@ Splash = {
 		  
 		  //Splash option: "Click to Join" 
 		  Crafty.e("2D, DOM, Text, Mouse")
-		      .attr({ w: 300, h: 20, x: 100, y: 200 })
-		      .text("Click to join")
-		      .css({ "text-align": "center"})
+		      .attr({ w: 300, h: 20, x: 100, y: 250 })
+		      .text("Join a game")
+		      .css({ "text-align": "center", "cursor": "pointer"})
 		      .textFont({size: '20px', weight: 'bold'})
 		      .textColor("#FFFFFF")
 		      .bind('Click', function(MouseEvent){
@@ -40,8 +40,8 @@ Splash = {
 		
 	      //Splash option: "Create Game" 
 		  Crafty.e("2D, DOM, Text, Mouse")
-		      .attr({ w: 300, h: 20, x: 100, y: Game.height() - 30 })
-		      .text("Create Game")
+		      .attr({ w: 300, h: 20, x: 100, y: 200 })
+		      .text("Create game")
 		      .css({ "text-align": "center", "cursor": "pointer"})
 		      .textFont({size: '20px', weight: 'bold'})
 		      .textColor("#FFFFFF")

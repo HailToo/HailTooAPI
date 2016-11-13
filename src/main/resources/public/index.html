@@ -1,7 +1,6 @@
 <html>
   <head>
-	<link rel="stylesheet" href="css/modal.css">
-  	<link rel="stylesheet" href="css/HailToo.css">
+	<link rel="stylesheet" href="css/HailToo.css">
   	<link rel="stylesheet" href="css/bootstrap.min.css">
   
   
@@ -22,49 +21,87 @@
   			Game.init();
 
         // Register menu buttons
-        $( "#create" ).click(MenuHelper.create);
-        $( "#join" ).click(MenuHelper.join);
-        $( "#get" ).click(MenuHelper.get);
-        $( "#start" ).click(MenuHelper.start);
+        $( "#b_get" ).click(MenuHelper.get);
+        $( "#b_start" ).click(MenuHelper.start);
+        $( "#b_promptMove").click(Game.promptMove);
+        $( "#b_promptSuggestion").click(Game.promptSuggestion);
+        
   		});
   	</script>
   </head>
   <body>
-  	<h1 id="title"></h1>
-  	<div id="modalDialog" class="modal-content">
-	  <div class="modal-body">
-	    <span class="close">X</span>
-	    <p>Modal body</p>
-	  </div>
-	</div>
-    <div id="game"></div>
-    <!--  TODO: <div id="playerInfo" style="width:300px;height:300px;border:1px solid black;">info panel</div> -->
+	<div id="game"></div>
     <ul id="cardList"></ul>
-    <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
+
+<!-- Buttons for testing -->
+    <button id="b_get">Get Game</button>
+    <button id="b_start">Start Game</button>
+    <!-- Button trigger modal -->
+    <button type="button" data-toggle="modal" data-target="#hail_prompt">It's your turn</button>
+    <button type="button" data-toggle="modal" data-target="#hail_move">Move</button>
+    <button type="button" data-toggle="modal" data-target="#hail_suggestion">Suggest</button>
+ 
+  <!-- Main Player Prompt -->
+  <div class="modal fade" id="hail_prompt" tabindex="-1" role="dialog" aria-labelledby="hail_promptLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_promptLabel"></h4>
         </div>
         <div class="modal-body">
-          <p>Some text in the modal.</p>
+          <h1>It's your turn...</h1>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div class="modal-footer" style="text-align: center;">
+          <button id="b_promptMove" type="button" class="" onclick='promptMove'>Move?</button>
+          <button id="b_promptSuggestion" type="button" class="" onclick='promptSuggestion'>Accuse!</button>
         </div>
       </div>
-      
     </div>
   </div>
+
+  <!-- Move Prompt -->
+  <div class="modal fade" id="hail_move" tabindex="-1" role="dialog" aria-labelledby="hail_moveLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_moveLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <p> todo, show options</p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="" onclick='doMove'>Move</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggestion Prompt -->
+  <div class="modal fade" id="hail_suggestion" tabindex="-1" role="dialog" aria-labelledby="hail_suggestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_suggestionLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <p> todo, preloaded room</p>
+          <p> todo, show options - suspect</p>
+          <p> todo, show options - weapon</p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="" onclick='doSuggestion'>Accuse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   </body>
-  <footer>
-  	<button id="create">Create</button>
-  	<button id="join">Join Game</button>
-  	<button id="get">Get Game</button>
-  	<button id="start">Start Game</button>
+  <footer style="bottom:0px; position: absolute;">
+  	<div>
+  		<span id="version">{insert version here}</span>
+	</div>
   </footer>
 </html>

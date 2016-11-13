@@ -117,7 +117,9 @@ Game = {
 		document.gameState = gameState;
 		
 		//Prompt player for move/suggestion
-		Game.prompt();
+		if (gameState.isActive === true && Game._user.character === gameState.currentPlayer.character) {
+			Game.prompt();
+		}
 	},
 	
 	getActor: function(characterName) {
@@ -133,5 +135,26 @@ Game = {
 	
 	prompt: function() {
 		//Splash.load_scene("Prompt");
+		// Toggle main modal ON
+		$('#hail_prompt').modal("show");
+	},
+	
+	promptMove: function() {
+		console.log("Displaying modal for user to MOVE their gamepiece.");
+		// Toggle main modal OFF
+		$('#hail_prompt').modal("hide");
+		
+		// Toggle move modal ON
+		$('#hail_move').modal("show");
+	},
+	
+	promptSuggestion: function() {
+		console.log("Displaying modal for user to MAKE A SUGGESTION at solving the mystery.");
+		// Toggle main modal OFF
+		$('#hail_prompt').modal("hide");
+		
+		// Toggle suggestion modal ON
+		$('#hail_suggestion').modal("show");
 	}
+	
 }

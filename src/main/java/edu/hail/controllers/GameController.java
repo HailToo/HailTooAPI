@@ -167,6 +167,10 @@ public class GameController {
     		throw new Exception("Unable to join game, maximum players reached.");
     	}
     	
+    	if (game.isActive) {
+    		throw new Exception("Unable to join game, already in progress.");
+    	}
+    	
     	for (Iterator<User> i = game.players.iterator(); i.hasNext();) {
     		if (i.next().character.equals(characterChoice)) {
     			throw new Exception("Character unavailable, please choose another character.");
