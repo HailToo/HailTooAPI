@@ -1,4 +1,4 @@
-li {
+#cardList li {
     list-style: none;
     width: 100px;
     height: 100px;
@@ -39,4 +39,12 @@ li.loading img {
     width:100%;
     background: #000;
     display: none;
+}
+
+#tail {
+    border: 1px solid blue;
+    height: 250px;
+    width: 400px;
+    overflow: hidden;
+    float: right;
 }

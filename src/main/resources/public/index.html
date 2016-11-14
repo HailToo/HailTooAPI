@@ -22,27 +22,33 @@
   			Game.init();
 
 	        // Register menu buttons
-	        $( "#b_get" ).click(MenuHelper.get);
-	        $( "#b_start" ).click(MenuHelper.start);
-	        $( "#b_promptMove").click(Game.promptMove);
-	        $( "#b_promptSuggestion").click(Game.promptSuggestion);
-	        $( "#b_doMove").click(Game.doMove);
-	        $( "#b_doSuggestion").click(Game.doSuggestion);
+	        $("#b_get").click(MenuHelper.get);
+	        $("#b_start").click(MenuHelper.start);
+	        $("#b_promptMove").click(Game.promptMove);
+	        $("#b_promptSuggestion").click(Game.promptSuggestion);
+	        $("#b_doMove").click(Game.doMove);
+	        $("#b_doSuggestion").click(Game.doSuggestion);
   		});
   	</script>
   </head>
   <body>
-	<div id="game"></div>
+  	<div>
+		<div id="game"></div>
+		<div id="tail">
+		    <div>{{ game log }}</div>
+		</div>
+	</div>
     <ul id="cardList"></ul>
 
-<!-- Buttons for testing -->
+	<!-- Buttons for testing -->
     <button id="b_get">Get Game</button>
     <button id="b_start">Start Game</button>
-    <!-- Button trigger modal -->
+    <!-- Button trigger modal 
     <button type="button" data-toggle="modal" data-target="#hail_prompt">It's your turn</button>
     <button type="button" data-toggle="modal" data-target="#hail_move">Move</button>
     <button type="button" data-toggle="modal" data-target="#hail_suggestion">Suggest</button>
- 
+ 	-->
+ 	
   <!-- Main Player Prompt -->
   <div class="modal fade" id="hail_prompt" tabindex="-1" role="dialog" aria-labelledby="hail_promptLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -55,8 +61,8 @@
           <h1>It's your turn...</h1>
         </div>
         <div class="modal-footer" style="text-align: center;">
-          <button id="b_promptMove" type="button" class="" onclick='promptMove'>Move?</button>
-          <button id="b_promptSuggestion" type="button" class="" onclick='promptSuggestion'>Accuse!</button>
+          <button id="b_promptMove" type="button">Move?</button>
+          <button id="b_promptSuggestion" type="button">Accuse!</button>
         </div>
       </div>
     </div>

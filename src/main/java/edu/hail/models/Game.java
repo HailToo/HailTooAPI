@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +34,21 @@ public class Game extends GameEntity {
 	
 	public int currentMove = 0;
 	
-	public boolean isActive = false;
+	public enum Status {
+		// Game has not started or has completed.
+		Inactive, 
+		
+		// Game is ongoing, has been started, not finished. 
+		Active,
+		
+		// Solution proposed, waiting for player to disprove
+		Waiting
+	};
+	
+	public Status status;
+	
+	//public SortedMap<Date, String> messages;
+	public List<String> messages;
 	
 	public User getCurrentPlayer() {
 		User ret = null;
@@ -49,6 +65,9 @@ public class Game extends GameEntity {
 	public Game() {
 		board = new Board();
 		players = new ArrayList<User>();
+		status = Status.Inactive;
+		//messages = new TreeMap<Date, String>();
+		messages = new ArrayList<String>();
 	}
 	
 	public void start() {
@@ -88,7 +107,7 @@ public class Game extends GameEntity {
 			log.warn("A game was started without any players, therefore no cards will be dealt.");
 		}
 		
-		this.isActive = true;
+		this.status = Game.Status.Active;
 	}
 	
 	protected List<String> getDeck() {

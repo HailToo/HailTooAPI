@@ -18,6 +18,11 @@ NotificationHelper = {
 	
 	populateHand: function(cards) {
 		var $list = $('#cardList');
+		
+		$list
+	    .find('li')
+	    .remove()
+	    .end();
 
 		$.each(cards, function(i, name) {
 			var $li = $('<li class="loading">').appendTo($list);
@@ -27,5 +32,11 @@ NotificationHelper = {
 			}).attr('src', "images/" + name + ".png")
 			.attr('style', 'width:100px; height:100px;');
 		})
+	},
+	
+	pushMessage: function(message) {
+		$("<div />").text(message).appendTo("#tail");
+	    var height = $("#tail").get(0).scrollHeight;
+	    $("#tail").animate({ scrollTop: height }, 500);
 	}
 };

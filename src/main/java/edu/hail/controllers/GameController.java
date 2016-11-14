@@ -9,6 +9,7 @@ import edu.hail.WebUtil;
 import edu.hail.models.Board;
 import edu.hail.models.Board.Location;
 import edu.hail.models.Game;
+import edu.hail.models.Game.Status;
 import edu.hail.models.GameEntity;
 import edu.hail.models.User;
 
@@ -138,14 +139,17 @@ public class GameController {
      * @return
      */
     @RequestMapping(value="/game", method = RequestMethod.PUT)
-    public @ResponseBody String createGame() {
+    public @ResponseBody String createGame(HttpServletRequest req) {
     	// Create unique game identifier
     	String gameId = UUID.randomUUID().toString();
     	Game newGame = new Game();
+    	User user = WebUtil.getUser(req);
     	newGame.name = gameId;
     	db.get("games").put(gameId, newGame);
     	
     	log.info(String.format("Game created: [%s]", gameId));
+    	//newGame.messages.put(new Date(), String.format("Game created by [ %s ]", user.name));
+    	newGame.messages.add(String.format("Game created by [ %s ]", user.name));
     	return gameId;
     }
     
@@ -167,7 +171,7 @@ public class GameController {
     		throw new Exception("Unable to join game, maximum players reached.");
     	}
     	
-    	if (game.isActive) {
+    	if (!game.status.equals(Game.Status.Inactive)) {
     		throw new Exception("Unable to join game, already in progress.");
     	}
     	
@@ -185,6 +189,8 @@ public class GameController {
     	// Add to game
     	game.players.add(user);
     	log.info(String.format("Player [%s] joined game [%s].", user.name, gameGuid));
+    	//game.messages.put(new Date(), String.format("[ %s ] has joined the game", user.name));
+    	game.messages.add(String.format("[ %s ] has joined the game", user.name));
     	return game;
     }
     
@@ -216,8 +222,19 @@ public class GameController {
 	 */
     @RequestMapping(value="/game/{gameGuid}/solve", method = RequestMethod.POST)
     public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @RequestBody Board.AREA room, @RequestBody Board.WEAPON weapon, @RequestBody Board.CHARACTER suspect) {
+    	boolean ret = false;
     	Game game = (Game) db.get("games").get(gameGuid);
-    	return game.solve(room, weapon, suspect);
+    	User user = game.getPlayer(req);
+    	ret = game.solve(room, weapon, suspect);
+    	
+    	//game.messages.put(new Date(), String.format("[ %s ] has suggested [ %s, %s, %s ]", user.name, room, weapon, suspect));
+    	game.messages.add(String.format("[ %s ] has suggested [ %s, %s, %s ]", user.name, room, weapon, suspect));
+    	
+    	if (!ret) {
+    		game.status = Status.Waiting;
+    	}
+    	
+    	return ret;
     	//TODO if true - game is finished, notify all players.
     }
     
@@ -244,6 +261,9 @@ public class GameController {
     		
     	if (!ret) {
     		log.info(String.format("Player [%s] requested an invalid move [%s].", user.name, area.toString()));
+    	} else {
+    		//game.messages.put(new Date(), String.format("[ %s ] move to [ %s ]", user.name, area.toString()));
+    		game.messages.add(String.format("[ %s ] move to [ %s ]", user.name, area.toString()));
     	}
     	
     	return ret;
@@ -252,7 +272,24 @@ public class GameController {
     @RequestMapping(value="/game/{gameGuid}/start", method = RequestMethod.POST)
     public @ResponseBody boolean start(HttpServletRequest req, @PathVariable String gameGuid) {
     	Game game = (Game) db.get("games").get(gameGuid);
+    	User user = game.getPlayer(req);
     	game.start();
+    	//game.messages.put(new Date(), String.format("[ %s ] has started the game", user.name));
+    	game.messages.add(String.format("[ %s ] has started the game", user.name));
     	return true;
+    }
+    
+    @RequestMapping(value="/game/{gameGuid}/disprove", method = RequestMethod.POST)
+    public @ResponseBody boolean disprove(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam String disprovingItem) {
+    	boolean ret = false;
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	User user = game.getPlayer(req);
+    	
+		game.status = Status.Active;
+		//game.messages.put(new Date(), String.format("[ %s ] disproved the suggestion with the card: [ %s ]", user.name, disprovingItem));
+		game.messages.add(String.format("[ %s ] disproved the suggestion with the card: [ %s ]", user.name, disprovingItem));
+		
+    	return ret;
+    	//TODO if true - game is finished, notify all players.
     }
 }

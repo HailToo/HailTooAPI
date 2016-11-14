@@ -118,10 +118,15 @@ Game = {
 			});
 		});
 		
+		//show new messages
+		for (var i = $('#tail').children().length; i < gameState.messages.length; ++i) {
+			NotificationHelper.pushMessage(gameState.messages[i]);
+		}
+	
 		document.gameState = gameState;
 		
 		//Prompt player for move/suggestion
-		if (gameState.isActive === true && Game._user.character === gameState.currentPlayer.character) {
+		if (gameState.status === "Active" && Game._user.character === gameState.currentPlayer.character) {
 			Game.prompt();
 		}
 	},
@@ -154,12 +159,7 @@ Game = {
 		// Get available moves, populate list
 		GameService.getMoves(document.gameState.name).done(function(data){
 			if (data !== null && data.length > 0) {
-				data.forEach(function(element) {
-					console.log("adding move: " + element);
-					$('select.moves').append($("<option></option>")
-		                    .attr("value", element)
-		                    .text(element));
-				})
+				GeneralHelper.populateDropdown('select.moves', data);
 			} else {
 				console.log("no available moves were returned!");
 			}

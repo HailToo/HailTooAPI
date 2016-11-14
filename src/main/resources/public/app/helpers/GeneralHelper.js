@@ -4,6 +4,11 @@ GeneralHelper = {
 			return;
 		}
 		
+		$(selector)
+	    .find('option')
+	    .remove()
+	    .end();
+		
 		optionList.forEach(function(element) {
 			console.log("adding move: " + element);
 			$(selector).append($("<option></option>")
