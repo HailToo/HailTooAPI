@@ -10,7 +10,6 @@ import edu.hail.models.Board;
 import edu.hail.models.Board.Location;
 import edu.hail.models.Game;
 import edu.hail.models.Game.Status;
-import edu.hail.models.GameEntity;
 import edu.hail.models.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +30,7 @@ public class GameController {
 	 * Key-value oriented data store.  This object will hold all current game instances
 	 * and their current states.
 	 */
-    private static final Map<String, Map<String, GameEntity>> db = new HashMap<String, Map<String, GameEntity>>();
+    private static final Map<String, Map<String, Game>> db = new HashMap<String, Map<String, Game>>();
     
     /**
      * Title of the game.
@@ -42,7 +41,7 @@ public class GameController {
      * General on-startup initializations.
      */
     static {
-    	db.put("games", new HashMap<String, GameEntity>());
+    	db.put("games", new HashMap<String, Game>());
     }
 
     /**

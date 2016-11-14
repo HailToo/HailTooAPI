@@ -17,9 +17,10 @@ import org.apache.commons.logging.LogFactory;
 import edu.hail.WebUtil;
 import edu.hail.models.Board.Location;
 
-public class Game extends GameEntity {
+public class Game {
 	
 	private static final Log log = LogFactory.getLog(Game.class);
+	public String name;
 	
 	public List<User> players;
 	private Board.AREA _room;
