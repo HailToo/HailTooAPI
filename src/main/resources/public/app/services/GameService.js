@@ -90,5 +90,13 @@ GameService = {
 			url: "api/game/" + gameGuid + "/move",
 			method: 'GET'
 		});
+	},
+	
+	solve: function(gameGuid, room, weapon, suspect) {
+		return GameService.ajax({
+			url: "api/game/" + gameGuid + "/solve",
+			method: 'POST',
+			data: { gameGuid: gameGuid, room: room, weapon: weapon, suspect: suspect }
+		});
 	}
 };

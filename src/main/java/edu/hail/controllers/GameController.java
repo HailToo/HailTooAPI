@@ -220,7 +220,7 @@ public class GameController {
 	 * @return
 	 */
     @RequestMapping(value="/game/{gameGuid}/solve", method = RequestMethod.POST)
-    public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @RequestBody Board.AREA room, @RequestBody Board.WEAPON weapon, @RequestBody Board.CHARACTER suspect) {
+    public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam Board.AREA room, @RequestParam Board.WEAPON weapon, @RequestParam Board.CHARACTER suspect) {
     	boolean ret = false;
     	Game game = (Game) db.get("games").get(gameGuid);
     	User user = game.getPlayer(req);
@@ -231,6 +231,9 @@ public class GameController {
     	
     	if (!ret) {
     		game.status = Status.Waiting;
+    		game.messages.add("Can anyone prove them wrong?!");
+    	} else {
+    		game.messages.add(String.format("[ %s ] has won the game!", user.name));
     	}
     	
     	return ret;

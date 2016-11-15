@@ -191,13 +191,36 @@ Game = {
 	
 	doMove: function() {
 		// Get user's choice
-		var moveTo = $('select.moves').val()
+		var moveTo = $('select.moves').val();
 		GameService.move(document.gameState.name, moveTo).done(function(data) {
 			if (data) {
 				$('#hail_move').modal("hide");
 				console.log("user has moved!")
 			}
 		});
+	},
+	
+	doSuggestion: function() {
+		// Get user's choices
+		//var room = $('select.rooms').val();
+		var room = document.gameState.board.locations.filter(function(l) { 
+			for(var i = 0; i < l.occupants.length; ++i) {
+				if(l.occupants[i].character === Game._user.character) {
+					return l;
+				}
+			}
+		});
+		var weapon = $('select.weapons').val();
+		var suspect = $('select.suspects').val();
+		
+		GameService.solve(document.gameState.name, room[0].name, weapon, suspect).done(function(data) {
+			if (data) {
+				console.log("player guessed successfully.");
+			} else {
+				console.log("player guessed incorrectly.");
+			}
+		});
+		
 	}
 	
 }
