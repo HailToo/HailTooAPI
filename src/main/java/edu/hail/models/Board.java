@@ -16,12 +16,12 @@ public class Board {
 	}
 	
 	public enum CHARACTER {
-		ProfPlum,
 		MsScarlet,
 		ColMustard,
 		MrsWhite,
+		MrGreen,
 		MrsPeacock,
-		MrGreen
+		ProfPlum
 	}
 	
 	public enum WEAPON {
