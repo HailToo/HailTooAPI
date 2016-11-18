@@ -100,7 +100,7 @@ public class Board {
 			case Study:
 				l.neighbors.add(AREA.HW_SH);
 				l.neighbors.add(AREA.HW_SL);
-				l.neighbors.add(AREA.BilliardRoom);
+				l.neighbors.add(AREA.Kitchen);
 				l.isRoom = true;
 				break;
 			case Hall:
@@ -112,7 +112,7 @@ public class Board {
 			case Lounge:
 				l.neighbors.add(AREA.HW_HL);
 				l.neighbors.add(AREA.HW_LD);
-				l.neighbors.add(AREA.BilliardRoom);
+				l.neighbors.add(AREA.Conservatory);
 				l.isRoom = true;
 				break;
 			case Library:
@@ -137,7 +137,7 @@ public class Board {
 			case Conservatory:
 				l.neighbors.add(AREA.HW_LC);
 				l.neighbors.add(AREA.HW_CB);
-				l.neighbors.add(AREA.BilliardRoom);
+				l.neighbors.add(AREA.Lounge);
 				l.isRoom = true;
 				break;
 			case Ballroom:
@@ -149,7 +149,7 @@ public class Board {
 			case Kitchen:
 				l.neighbors.add(AREA.HW_DK);
 				l.neighbors.add(AREA.HW_BK);
-				l.neighbors.add(AREA.BilliardRoom);
+				l.neighbors.add(AREA.Study);
 				l.isRoom = true;
 				break;
 			case HW_SH:
