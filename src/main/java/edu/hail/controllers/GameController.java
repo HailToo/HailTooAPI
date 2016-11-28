@@ -10,7 +10,9 @@ import edu.hail.models.Board;
 import edu.hail.models.Board.Location;
 import edu.hail.models.Game;
 import edu.hail.models.Game.Status;
+import edu.hail.models.Suggestion;
 import edu.hail.models.User;
+import edu.hail.models.User.ACTION;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -264,6 +266,13 @@ public class GameController {
     	if (!ret) {
     		log.info(String.format("Player [%s] requested an invalid move [%s].", user.name, area.toString()));
     	} else {
+    		user.availableActions.remove(ACTION.Move);
+    		
+    		// User can make suggestion if move ends in a room.
+    		if (game.board.getLocation(area).isRoom) {
+    			user.availableActions.add(ACTION.Suggest);
+    		}
+    		
     		//game.messages.put(new Date(), String.format("[ %s ] move to [ %s ]", user.name, area.toString()));
     		game.messages.add(String.format("[ %s ] move to [ %s ]", user.name, area.toString()));
     	}
@@ -281,17 +290,82 @@ public class GameController {
     	return true;
     }
     
+    /**
+     * Non-current player responding to a suggestion proposed by the current player.
+     * Can send null string when player cannot disprove (will advance to next player).
+     * @param req
+     * @param gameGuid
+     * @param disprovingItem
+     * @return
+     */
     @RequestMapping(value="/game/{gameGuid}/disprove", method = RequestMethod.POST)
     public @ResponseBody boolean disprove(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam String disprovingItem) {
     	boolean ret = false;
     	Game game = (Game) db.get("games").get(gameGuid);
     	User user = game.getPlayer(req);
     	
-		game.status = Status.Active;
-		//game.messages.put(new Date(), String.format("[ %s ] disproved the suggestion with the card: [ %s ]", user.name, disprovingItem));
-		game.messages.add(String.format("[ %s ] disproved the suggestion with the card: [ %s ]", user.name, disprovingItem));
+    	if (game.currentSuggestion.containsAny(disprovingItem)) {
+    		game.status = Status.Active;
+    		game.currentSuggestion = null;
+    		game.currentMove++;
+    		
+    		game.messages.add(String.format("[ %s ] disproved the suggestion with the card: [ %s ]", user.name, disprovingItem));
+    	} else {
+    		//Advance to next player
+    		User followingUser = getFollowingPlayer(game, user);
+    		followingUser.availableActions.clear();
+    		if (followingUser.character.equals(game.currentSuggestion.suggester.character)) {
+				// We've cycled through all the players without disproving the suggestion!
+    			followingUser.availableActions.add(ACTION.Accuse);				
+				game.messages.add(String.format("Suggestion by [ %s ] cannot be disproven...", followingUser.name));
+			} else {    				
+				followingUser.availableActions.add(ACTION.Disprove);
+				game.messages.add(String.format("[ %s ] was unable to disprove the suggestion.", user.name));
+			}
+    	
+    	}
 		
     	return ret;
-    	//TODO if true - game is finished, notify all players.
+    }
+    
+    @RequestMapping(value="/game/{gameGuid}/suggest", method = RequestMethod.POST)
+    public @ResponseBody void suggest(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam Board.AREA room, @RequestParam Board.WEAPON weapon, @RequestParam Board.CHARACTER suspect) {
+
+    	Game game = (Game) db.get("games").get(gameGuid);
+    	User user = game.getPlayer(req);
+    	
+    	Suggestion suggestion = new Suggestion();
+    	suggestion.suggester = user;
+    	suggestion.room = room;
+    	suggestion.suspect = suspect;
+    	suggestion.weapon = weapon;
+    	
+    	// Move accusee into room
+    	User accused = game.getPlayer(suspect);
+    	game.movePlayer(accused, room, true);
+    	// User will be allowed to suggest without moving in their next turn.
+    	accused.availableActions.add(ACTION.Suggest);
+    	
+    	// Set current suggestion
+    	game.currentSuggestion = suggestion;
+    	
+    	// Remove available actions from user
+    	user.availableActions.clear();
+    	
+    	// Prompt disproval from following player
+    	User followingPlayer = getFollowingPlayer(game, user);
+    	followingPlayer.availableActions.clear();
+    	followingPlayer.availableActions.add(ACTION.Disprove);
+    	
+    }
+    
+    private static User getFollowingPlayer(Game game, User base) {
+    	int nextIndex = 0;
+    	for(int i = 0; i < game.players.size(); ++i) {
+    		if (game.players.get(i).character.equals(base.character)) {
+    			nextIndex = i+1 % game.players.size();
+    		}
+    	}
+    	return game.players.get(nextIndex);
     }
 }

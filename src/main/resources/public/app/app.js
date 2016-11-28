@@ -128,6 +128,18 @@ Game = {
 		//Prompt player for move/suggestion
 		if (gameState.status === "Active" && Game._user.character === gameState.currentPlayer.character) {
 			Game.prompt();
+			//Enable/disable action buttons
+			disableMove = gameState.currentPlayer.availableActions.indexOf('Move') == -1;
+			disableSuggest = gameState.currentPlayer.availableActions.indexOf('Suggest') == -1;
+			disableAccuse = gameState.currentPlayer.availableActions.indexOf('Accuse') == -1;
+			
+			$('#b_promptMove').prop('disabled', disableMove);
+			$('#b_promptSuggest').prop('disabled', disableSuggest);
+			$('#b_promptAccuse').prop('disabled', disableAccuse);
+			
+		} else {
+			//Check for available actions for self
+			//if (gameState.players.
 		}
 	},
 	

@@ -88,7 +88,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void LocationRetrievalTest() {
+	public void locationRetrievalTest() {
 		Game g = null;
 		
 		g = new Game();
@@ -114,5 +114,28 @@ public class GameTest {
 			Assert.assertNotNull(idk);
 			Assert.assertTrue(idk.neighbors.size() >= 2);
 		}
+	}
+	
+	@Test
+	public void scarletFirstTest() {
+		Game g = null;
+		
+		g = new Game();
+		
+		// Add fake players
+		for (int i = 1; i < 5; i++) {
+			User u = new User("test_" + i, null);
+			u.character = CHARACTER.values()[i];
+			g.addPlayer(u);
+		}
+		
+		//deliberately add MsScarlet last
+		User u = new User("test_0", null);
+		u.character = CHARACTER.values()[0];
+		g.addPlayer(u);
+		
+		g.start();
+		
+		Assert.assertTrue(g.getCurrentPlayer().character.equals(CHARACTER.MsScarlet));		
 	}
 }
