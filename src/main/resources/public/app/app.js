@@ -189,6 +189,10 @@ Game = {
 		});
 	},
 	
+	promptAccusation: function() {
+		//send up guess
+	},
+	
 	doMove: function() {
 		// Get user's choice
 		var moveTo = $('select.moves').val();
@@ -217,6 +221,7 @@ Game = {
 			if (data) {
 				console.log("player guessed successfully.");
 			} else {
+				//TODO: disable "accuse" button.
 				console.log("player guessed incorrectly.");
 			}
 		});

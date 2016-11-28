@@ -25,7 +25,8 @@
 	        $("#b_get").click(MenuHelper.get);
 	        $("#b_start").click(MenuHelper.start);
 	        $("#b_promptMove").click(Game.promptMove);
-	        $("#b_promptSuggestion").click(Game.promptSuggestion);
+	        $("#b_promptSuggest").click(Game.promptSuggestion);
+	        $("#b_promptAccuse").click(Game.promptAccusation);
 	        $("#b_doMove").click(Game.doMove);
 	        $("#b_doSuggestion").click(Game.doSuggestion);
   		});
@@ -62,7 +63,8 @@
         </div>
         <div class="modal-footer" style="text-align: center;">
           <button id="b_promptMove" type="button">Move?</button>
-          <button id="b_promptSuggestion" type="button">Accuse!</button>
+          <button id="b_promptSuggest" type="button">Suggest</button>
+          <button id="b_promptAccuse" type="button">Accuse!</button>
         </div>
       </div>
     </div>
