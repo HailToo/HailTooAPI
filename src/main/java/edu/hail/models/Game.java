@@ -115,7 +115,7 @@ public class Game {
 		}
 		
 		// Place MsScarlet at the front of the player list (always starts with her).
-		if (!this.players.get(0).character.equals(CHARACTER.MsScarlet)) {
+		if (this.players.size() > 0 && !this.players.get(0).character.equals(CHARACTER.MsScarlet)) {
 			for (Iterator<User> it = this.players.iterator(); it.hasNext();) {
 				User p = it.next();
 				if (p != null && p.character.equals(CHARACTER.MsScarlet)) {
