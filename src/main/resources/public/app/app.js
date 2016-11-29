@@ -129,17 +129,25 @@ Game = {
 		
 		//Prompt player for move/suggestion
 		if (gameState.status === "Active" && Game._user.character === gameState.currentPlayer.character) {
-			Game.prompt();
-			//Enable/disable action buttons
-			disableMove = gameState.currentPlayer.availableActions.indexOf('Move') == -1;
-			disableSuggest = gameState.currentPlayer.availableActions.indexOf('Suggest') == -1;
-			disableAccuse = gameState.currentPlayer.availableActions.indexOf('Accuse') == -1;
-			
-			$('#b_promptMove').prop('disabled', disableMove);
-			$('#b_promptSuggest').prop('disabled', disableSuggest);
-			$('#b_promptAccuse').prop('disabled', disableAccuse);
-			
+			if (gameState.currentPlayer.availableActions.indexOf('Wait') >= 0) {
+				Game.promptWait();
+			} else {
+				Game.prompt();
+				//Enable/disable action buttons
+				disableMove = gameState.currentPlayer.availableActions.indexOf('Move') == -1;
+				disableSuggest = gameState.currentPlayer.availableActions.indexOf('Suggest') == -1;
+				disableAccuse = gameState.currentPlayer.availableActions.indexOf('Accuse') == -1;
+				
+				$('#b_promptMove').prop('disabled', disableMove);
+				$('#b_promptSuggest').prop('disabled', disableSuggest);
+				$('#b_promptAccuse').prop('disabled', disableAccuse);
+			}
 		} else {
+			$('#hail_prompt').modal("hide");
+			$('#hail_suggestion').modal("hide");
+			$('#hail_move').modal("hide");
+			$('#hail_wait').modal("hide");
+			
 			//Check for available actions for self
 			for(var i = 0; i < gameState.players.length; ++i) {
 				if (gameState.players[i].character === Game._user.character && gameState.players[i].availableActions.indexOf('Disprove') >= 0) {
@@ -221,6 +229,7 @@ Game = {
 		for(var i = 0; i < challengeCards.length; ++i) {
 			if(Game._user.cards.indexOf(challengeCards[i]) === -1) {
 				challengeCards.splice(i, 1);
+				--i;
 			}
 		}
 		if (challengeCards.length === 0) {
@@ -232,6 +241,14 @@ Game = {
 	
 	promptAccusation: function() {
 		//send up guess
+	},
+	
+	promptWait: function() {
+		$('#hail_prompt').modal("hide");
+		$('#hail_suggestion').modal("hide");
+		$('#hail_disprove').modal("hide");
+		$('#hail_move').modal("hide");
+		$('#hail_wait').modal("show");
 	},
 	
 	doMove: function() {
@@ -247,7 +264,6 @@ Game = {
 	
 	doSuggestion: function() {
 		// Get user's choices
-		//var room = $('select.rooms').val();
 		var room = document.gameState.board.locations.filter(function(l) { 
 			for(var i = 0; i < l.occupants.length; ++i) {
 				if(l.occupants[i].character === Game._user.character) {
@@ -267,6 +283,17 @@ Game = {
 			}
 		});
 		
+	},
+	
+	doDisprove: function() {
+		var challengeItem = $('select.challenge').val();
+		
+		GameService.disprove(document.gameState.name, challengeItem).done(function(data) {
+			if (data) {
+				console.log("disproval submitted.");
+				$('#hail_disprove').modal("hide");
+			}
+		});
 	}
 	
 }

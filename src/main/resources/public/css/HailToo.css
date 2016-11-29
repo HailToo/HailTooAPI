@@ -48,3 +48,11 @@ li.loading img {
     overflow: hidden;
     float: right;
 }
+
+.modal-content {
+    width: auto; 
+    text-align:center; 
+    margin: auto auto; 
+    min-width: 200px; 
+    max-width: 400px;
+}

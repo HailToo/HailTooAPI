@@ -8,7 +8,7 @@ public class Suggestion {
 	public Board.CHARACTER suspect;
 	
 	public boolean containsAny(String item) {
-		return containsAny(Board.AREA.valueOf(item), Board.WEAPON.valueOf(item), Board.CHARACTER.valueOf(item));
+		return containsAny(Board.AREA.fromString(item), Board.WEAPON.fromString(item), Board.CHARACTER.fromString(item));
 	}
 	
 	public boolean containsAny(Board.AREA room, Board.WEAPON weapon, Board.CHARACTER suspect) {

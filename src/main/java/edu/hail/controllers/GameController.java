@@ -300,7 +300,7 @@ public class GameController {
      */
     @RequestMapping(value="/game/{gameGuid}/disprove", method = RequestMethod.POST)
     public @ResponseBody boolean disprove(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam String disprovingItem) {
-    	boolean ret = false;
+    	boolean ret = true;
     	Game game = (Game) db.get("games").get(gameGuid);
     	User user = game.getPlayer(req);
     	

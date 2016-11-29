@@ -16,34 +16,97 @@ public class Board {
 	}
 	
 	public enum CHARACTER {
-		MsScarlet,
-		ColMustard,
-		MrsWhite,
-		MrGreen,
-		MrsPeacock,
-		ProfPlum
+		MsScarlet("MsScarlet"),
+		ColMustard("ColMustard"),
+		MrsWhite("MrsWhite"),
+		MrGreen("MrGreen"),
+		MrsPeacock("MrsPeacock"),
+		ProfPlum("ProfPlum");
+		
+		private String text;
+		
+		CHARACTER(String text) {
+			this.text = text;
+		}
+		
+		public String getText() {
+			return this.text;
+		}
+		
+		public static CHARACTER fromString(String text) {
+			if (text != null && !text.trim().isEmpty()) {
+				for(CHARACTER c : CHARACTER.values()) {
+					if (text.equalsIgnoreCase(c.text)) {
+						return c;
+					}
+				}
+			}
+			return null;
+		}
 	}
 	
 	public enum WEAPON {
-		Candlestick,
-		Knife,
-		LeadPipe,
-		Revolver,
-		Rope,
-		Wrench
+		Candlestick("Candlestick"),
+		Knife("Knife"),
+		LeadPipe("LeadPipe"),
+		Revolver("Revolver"),
+		Rope("Rope"),
+		Wrench("Wrench");
+		
+		private String text;
+		
+		WEAPON(String text) {
+			this.text = text;
+		}
+		
+		public String getText() {
+			return this.text;
+		}
+		
+		public static WEAPON fromString(String text) {
+			if (text != null && !text.trim().isEmpty()) {
+				for(WEAPON c : WEAPON.values()) {
+					if (text.equalsIgnoreCase(c.text)) {
+						return c;
+					}
+				}
+			}
+			return null;
+		}
 	}
 	
 	public enum AREA {
-		Study,
-		Hall,
-		Lounge,
-		Library,
-		BilliardRoom,
-		DiningRoom,
-		Conservatory,
-		Ballroom,
-		Kitchen,
-		HW_SH, HW_HL, HW_SL, HW_HB, HW_LD, HW_LB, HW_BD, HW_LC, HW_BB, HW_DK, HW_CB, HW_BK
+		Study("Study"),
+		Hall("Hall"),
+		Lounge("Lounge"),
+		Library("Library"),
+		BilliardRoom("BilliardRoom"),
+		DiningRoom("DiningRoom"),
+		Conservatory("Conservatory"),
+		Ballroom("Ballroom"),
+		Kitchen("Kitchen"),
+		HW_SH("HW_SH"), HW_HL("HW_HL"), HW_SL("HW_SL"), HW_HB("HW_HB"), HW_LD("HW_LD"), HW_LB("HW_LB"), HW_BD("HW_BD"), HW_LC("HW_LC"), HW_BB("HW_BB"), HW_DK("HW_DK"), HW_CB("HW_CB"), HW_BK("HW_BK");
+	
+		private String text;
+		
+		AREA(String text) {
+			this.text = text;
+		}
+		
+		public String getText() {
+			return this.text;
+		}
+		
+		public static AREA fromString(String text) {
+			if (text != null && !text.trim().isEmpty()) {
+				for(AREA c : AREA.values()) {
+					if (text.equalsIgnoreCase(c.text)) {
+						return c;
+					}
+				}
+			}
+			return null;
+		}
 	}
 	
 	public static class Location {

@@ -21,14 +21,17 @@
 	display: none;
 	z-index: 2;
     position: relative;
-    margin: 0 auto;
     bottom: 0;
     background-color: #fefefe;
-    width: 50%;
     -webkit-animation-name: slideIn;
     -webkit-animation-duration: 0.4s;
     animation-name: slideIn;
-    animation-duration: 0.4s
+    animation-duration: 0.4s;
+    width: auto; 
+    text-align:center; 
+    margin: auto auto; 
+    min-width: 200px; 
+    max-width: 400px;
 }
 
 /* The Close Button */
