@@ -329,10 +329,14 @@ public class GameController {
     }
     
     @RequestMapping(value="/game/{gameGuid}/suggest", method = RequestMethod.POST)
-    public @ResponseBody void suggest(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam Board.AREA room, @RequestParam Board.WEAPON weapon, @RequestParam Board.CHARACTER suspect) {
+    public @ResponseBody void suggest(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam Board.AREA room, @RequestParam Board.WEAPON weapon, @RequestParam Board.CHARACTER suspect) throws Exception {
 
     	Game game = (Game) db.get("games").get(gameGuid);
     	User user = game.getPlayer(req);
+    	
+    	if (!user.equals(game.getCurrentPlayer())) {
+    		throw new Exception("User not authorized to make suggestion at this time.");
+    	}
     	
     	Suggestion suggestion = new Suggestion();
     	suggestion.suggester = user;
@@ -351,6 +355,7 @@ public class GameController {
     	
     	// Remove available actions from user
     	user.availableActions.clear();
+    	user.availableActions.add(ACTION.Wait);
     	
     	// Prompt disproval from following player
     	User followingPlayer = getFollowingPlayer(game, user);

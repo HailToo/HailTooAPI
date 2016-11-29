@@ -19,6 +19,6 @@ public class User {
     }
     
     public enum ACTION {
-    	Move, Suggest, Accuse, Disprove
+    	Move, Suggest, Accuse, Disprove, Wait
     }
 }

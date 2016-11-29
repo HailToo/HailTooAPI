@@ -114,6 +114,8 @@ Game = {
 				if (player.name === Game._user.name) {
 					//Update hand on screen
 					NotificationHelper.populateHand(player.cards);
+					
+					Game._user.cards = player.cards;
 				}
 			});
 		});
@@ -139,7 +141,15 @@ Game = {
 			
 		} else {
 			//Check for available actions for self
-			//if (gameState.players.
+			for(var i = 0; i < gameState.players.length; ++i) {
+				if (gameState.players[i].character === Game._user.character && gameState.players[i].availableActions.indexOf('Disprove') >= 0) {
+					//Prompt user to disprove suggest!
+					
+					//TODO: show all cards they could use to disprove (filter their deck down to relevant cards) or option "cannot disprove".
+					console.log("Prompt to disprove suggestion!");
+					Game.promptDisprove();
+				}
+			}
 		}
 	},
 	
@@ -201,6 +211,25 @@ Game = {
 		});
 	},
 	
+	promptDisprove: function() {
+		console.log("Displaying modal for user to DISPROVE A SUGGESTION at solving the mystery.");
+		
+		// Toggle disprove modal ON
+		$('#hail_disprove').modal("show");
+		
+		var challengeCards = [document.gameState.currentSuggestion.room, document.gameState.currentSuggestion.suspect, document.gameState.currentSuggestion.weapon];
+		for(var i = 0; i < challengeCards.length; ++i) {
+			if(Game._user.cards.indexOf(challengeCards[i]) === -1) {
+				challengeCards.splice(i, 1);
+			}
+		}
+		if (challengeCards.length === 0) {
+			challengeCards.push('Cannot disprove');
+		}
+		
+		GeneralHelper.populateDropdown('select.challenge', challengeCards);
+	},
+	
 	promptAccusation: function() {
 		//send up guess
 	},
@@ -229,7 +258,7 @@ Game = {
 		var weapon = $('select.weapons').val();
 		var suspect = $('select.suspects').val();
 		
-		GameService.solve(document.gameState.name, room[0].name, weapon, suspect).done(function(data) {
+		GameService.suggest(document.gameState.name, room[0].name, weapon, suspect).done(function(data) {
 			if (data) {
 				console.log("player guessed successfully.");
 			} else {

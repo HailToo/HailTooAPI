@@ -112,7 +112,43 @@
       </div>
     </div>
   </div>
+  
+  <!-- Disproval Prompt -->
+  <div class="modal fade" id="hail_disprove" tabindex="-1" role="dialog" aria-labelledby="hail_disproveLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_disproveLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <p> todo, preloaded challenge cards</p>
+          <select class="challenge"></select>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button id="b_doDisprove" type="button">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
+<!-- Waiting Prompt -->
+  <div class="modal fade" id="hail_wait" tabindex="-1" role="dialog" aria-labelledby="hail_waitLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="hail_waitLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <p> Waiting for another user to disprove your suggestion... </p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+        </div>
+      </div>
+    </div>
+  </div>
+  
   </body>
   <footer style="bottom: 0px;position: fixed;display: block;right: 0px;background-color: #d8d8d8;width: 100%;height: 20px;">
   	<div>
