@@ -191,12 +191,22 @@ public class Game {
 	
 	public User getPlayer(String name) {
 		// FIXME: Streams are super cool, but entirely unreadable.
-		return this.players.stream().filter(x->x.name.equals(name)).collect(Collectors.toList()).get(0);
+		User ret = null;
+		List<User> searchResult = this.players.stream().filter(x->x.name.equals(name)).collect(Collectors.toList());
+		if (!searchResult.isEmpty()) {
+			ret = searchResult.get(0);
+		}
+		return ret;
 	}
 	
 	public User getPlayer(Board.CHARACTER character) {
 		// FIXME: Streams are super cool, but entirely unreadable.
-		return this.players.stream().filter(x->x.character.equals(character)).collect(Collectors.toList()).get(0);
+		User ret = null;
+		List<User> searchResult = this.players.stream().filter(x->x.character.equals(character)).collect(Collectors.toList());
+		if (!searchResult.isEmpty()) {
+			ret = searchResult.get(0);
+		}
+		return ret;
 	}
 	
 	public boolean movePlayer(User player, Board.AREA moveTo) {
@@ -211,7 +221,8 @@ public class Game {
     		Location l = it.next();
     		if (l.occupants.stream().filter(x->x.name.equals(player.name)).collect(Collectors.toList()).size() == 1) {
     			currentLocation = l;
-    		} else if (l.name.equals(moveTo)) {
+    		} 
+    		if (l.name.equals(moveTo)) {
     			futureLocation = l;
     		}
     	}
@@ -228,4 +239,30 @@ public class Game {
 		
 		return ret;
 	}
+	
+	public void advanceGame() {
+		// Unmark any Wait/Disprove actions
+		this.status = Status.Active;
+		this.currentSuggestion = null;
+		for(User u : this.players) {
+			u.availableActions.remove(ACTION.Wait);
+			u.availableActions.remove(ACTION.Disprove);
+		}
+		
+		// Next player can always move
+		User nextPlayer = getFollowingPlayer(this, this.getCurrentPlayer());
+		nextPlayer.availableActions.add(ACTION.Move);
+		nextPlayer.availableActions.add(ACTION.Accuse);
+		currentMove++;
+	}
+	
+	public static User getFollowingPlayer(Game game, User base) {
+    	int nextIndex = 0;
+    	for(int i = 0; i < game.players.size(); ++i) {
+    		if (game.players.get(i).character.equals(base.character)) {
+    			nextIndex = ((i + 1) % game.players.size());
+    		}
+    	}
+    	return game.players.get(nextIndex);
+    }
 }

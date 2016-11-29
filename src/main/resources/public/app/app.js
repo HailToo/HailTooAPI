@@ -152,8 +152,6 @@ Game = {
 			for(var i = 0; i < gameState.players.length; ++i) {
 				if (gameState.players[i].character === Game._user.character && gameState.players[i].availableActions.indexOf('Disprove') >= 0) {
 					//Prompt user to disprove suggest!
-					
-					//TODO: show all cards they could use to disprove (filter their deck down to relevant cards) or option "cannot disprove".
 					console.log("Prompt to disprove suggestion!");
 					Game.promptDisprove();
 				}

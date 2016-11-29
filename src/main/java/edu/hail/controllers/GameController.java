@@ -271,6 +271,8 @@ public class GameController {
     		// User can make suggestion if move ends in a room.
     		if (game.board.getLocation(area).isRoom) {
     			user.availableActions.add(ACTION.Suggest);
+    		} else {
+    			game.advanceGame();
     		}
     		
     		//game.messages.put(new Date(), String.format("[ %s ] move to [ %s ]", user.name, area.toString()));
@@ -305,15 +307,13 @@ public class GameController {
     	User user = game.getPlayer(req);
     	
     	if (game.currentSuggestion.containsAny(disprovingItem)) {
-    		game.status = Status.Active;
-    		game.currentSuggestion = null;
-    		game.currentMove++;
-    		
+    		game.advanceGame();    		
     		game.messages.add(String.format("[ %s ] disproved the suggestion with the card: [ %s ]", user.name, disprovingItem));
     	} else {
+    		user.availableActions.remove(ACTION.Disprove);
     		//Advance to next player
-    		User followingUser = getFollowingPlayer(game, user);
-    		followingUser.availableActions.clear();
+    		User followingUser = Game.getFollowingPlayer(game, user);
+    		//followingUser.availableActions.clear();
     		if (followingUser.character.equals(game.currentSuggestion.suggester.character)) {
 				// We've cycled through all the players without disproving the suggestion!
     			followingUser.availableActions.add(ACTION.Accuse);				
@@ -346,10 +346,11 @@ public class GameController {
     	
     	// Move accusee into room
     	User accused = game.getPlayer(suspect);
-    	game.movePlayer(accused, room, true);
-    	// User will be allowed to suggest without moving in their next turn.
-    	accused.availableActions.add(ACTION.Suggest);
-    	
+    	if (accused != null) {
+	    	game.movePlayer(accused, room, true);
+	    	// User will be allowed to suggest without moving in their next turn.
+	    	accused.availableActions.add(ACTION.Suggest);
+    	}
     	// Set current suggestion
     	game.currentSuggestion = suggestion;
     	
@@ -358,19 +359,11 @@ public class GameController {
     	user.availableActions.add(ACTION.Wait);
     	
     	// Prompt disproval from following player
-    	User followingPlayer = getFollowingPlayer(game, user);
-    	followingPlayer.availableActions.clear();
+    	User followingPlayer = Game.getFollowingPlayer(game, user);
+    	//followingPlayer.availableActions.clear();
     	followingPlayer.availableActions.add(ACTION.Disprove);
     	
     }
     
-    private static User getFollowingPlayer(Game game, User base) {
-    	int nextIndex = 0;
-    	for(int i = 0; i < game.players.size(); ++i) {
-    		if (game.players.get(i).character.equals(base.character)) {
-    			nextIndex = i+1 % game.players.size();
-    		}
-    	}
-    	return game.players.get(nextIndex);
-    }
+    
 }
