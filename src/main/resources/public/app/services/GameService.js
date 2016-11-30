@@ -92,11 +92,19 @@ GameService = {
 		});
 	},
 	
-	solve: function(gameGuid, room, weapon, suspect) {
+	suggest: function(gameGuid, room, weapon, suspect) {
 		return GameService.ajax({
-			url: "api/game/" + gameGuid + "/solve",
+			url: "api/game/" + gameGuid + "/suggest",
 			method: 'POST',
 			data: { gameGuid: gameGuid, room: room, weapon: weapon, suspect: suspect }
+		});
+	},
+	
+	disprove: function(gameGuid, challengeItem) {
+		return GameService.ajax({
+			url: "api/game/" + gameGuid + "/disprove",
+			method: 'POST',
+			data: { gameGuid: gameGuid, disprovingItem: challengeItem }
 		});
 	}
 };

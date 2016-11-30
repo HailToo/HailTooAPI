@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +13,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.hail.WebUtil;
+import edu.hail.models.Board.CHARACTER;
 import edu.hail.models.Board.Location;
+import edu.hail.models.User.ACTION;
 
 public class Game {
 	
@@ -55,10 +55,16 @@ public class Game {
 		User ret = null;
 		if (players.size() > 0) {
 			ret = players.get(currentMove % players.size());
-		}
+			if (ret.availableActions.size() == 0) {
+				ret.availableActions.add(ACTION.Move);
+				ret.availableActions.add(ACTION.Accuse);
+			}
+		}		
 		
 		return ret;
 	}
+	
+	public Suggestion currentSuggestion = null;
 	
 	/**
 	 * Create solution
@@ -106,6 +112,18 @@ public class Game {
 			}
 		} else {
 			log.warn("A game was started without any players, therefore no cards will be dealt.");
+		}
+		
+		// Place MsScarlet at the front of the player list (always starts with her).
+		if (this.players.size() > 0 && !this.players.get(0).character.equals(CHARACTER.MsScarlet)) {
+			for (Iterator<User> it = this.players.iterator(); it.hasNext();) {
+				User p = it.next();
+				if (p != null && p.character.equals(CHARACTER.MsScarlet)) {
+					this.players.remove(p);
+					this.players.add(0, p);
+					break;
+				}
+			}
 		}
 		
 		this.status = Game.Status.Active;
@@ -172,10 +190,30 @@ public class Game {
 	}
 	
 	public User getPlayer(String name) {
-		return this.players.stream().filter(x->x.name.equals(name)).collect(Collectors.toList()).get(0);
+		// FIXME: Streams are super cool, but entirely unreadable.
+		User ret = null;
+		List<User> searchResult = this.players.stream().filter(x->x.name.equals(name)).collect(Collectors.toList());
+		if (!searchResult.isEmpty()) {
+			ret = searchResult.get(0);
+		}
+		return ret;
+	}
+	
+	public User getPlayer(Board.CHARACTER character) {
+		// FIXME: Streams are super cool, but entirely unreadable.
+		User ret = null;
+		List<User> searchResult = this.players.stream().filter(x->x.character.equals(character)).collect(Collectors.toList());
+		if (!searchResult.isEmpty()) {
+			ret = searchResult.get(0);
+		}
+		return ret;
 	}
 	
 	public boolean movePlayer(User player, Board.AREA moveTo) {
+		return movePlayer(player, moveTo, false);
+	}
+	
+	public boolean movePlayer(User player, Board.AREA moveTo, boolean bySuggestion) {
 		boolean ret = false;
 		
 		Location currentLocation = null, futureLocation = null;
@@ -183,22 +221,48 @@ public class Game {
     		Location l = it.next();
     		if (l.occupants.stream().filter(x->x.name.equals(player.name)).collect(Collectors.toList()).size() == 1) {
     			currentLocation = l;
-    		} else if (l.name.equals(moveTo)) {
+    		} 
+    		if (l.name.equals(moveTo)) {
     			futureLocation = l;
     		}
     	}
     	
     	// Validate that the move is allow
-    	if (this.getCurrentPlayer().name.equals(player.name) && currentLocation.neighbors.contains(moveTo) && futureLocation.occupants.size() < futureLocation.capacity()) {
+    	if (bySuggestion || (this.getCurrentPlayer().name.equals(player.name) && currentLocation.neighbors.contains(moveTo) && futureLocation.occupants.size() < futureLocation.capacity())) {
     		// Remove player from current location
     		currentLocation.occupants.removeIf(x->x.name.equals(player.name));
     		// Add player to new location
     		futureLocation.occupants.add(player);
     		
-    		currentMove++;
     		ret = true;
     	} 
 		
 		return ret;
 	}
+	
+	public void advanceGame() {
+		// Unmark any Wait/Disprove actions
+		this.status = Status.Active;
+		this.currentSuggestion = null;
+		for(User u : this.players) {
+			u.availableActions.remove(ACTION.Wait);
+			u.availableActions.remove(ACTION.Disprove);
+		}
+		
+		// Next player can always move
+		User nextPlayer = getFollowingPlayer(this, this.getCurrentPlayer());
+		nextPlayer.availableActions.add(ACTION.Move);
+		nextPlayer.availableActions.add(ACTION.Accuse);
+		currentMove++;
+	}
+	
+	public static User getFollowingPlayer(Game game, User base) {
+    	int nextIndex = 0;
+    	for(int i = 0; i < game.players.size(); ++i) {
+    		if (game.players.get(i).character.equals(base.character)) {
+    			nextIndex = ((i + 1) % game.players.size());
+    		}
+    	}
+    	return game.players.get(nextIndex);
+    }
 }

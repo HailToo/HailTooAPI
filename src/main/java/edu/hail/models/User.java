@@ -11,6 +11,7 @@ public class User {
     public String email;
     public Board.CHARACTER character;
     public List<String> cards = new ArrayList<String>();
+    public List<ACTION> availableActions = new ArrayList<ACTION>();
     
     public User(String name, String email) {
         this.name = name;
@@ -18,6 +19,6 @@ public class User {
     }
     
     public enum ACTION {
-    	Move, Suggestion, Disprove
+    	Move, Suggest, Accuse, Disprove, Wait
     }
 }
