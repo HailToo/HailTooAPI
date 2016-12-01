@@ -1,57 +1,112 @@
-<html>
-  <head>
-	<link rel="stylesheet" href="css/HailToo.css">
-  	<link rel="stylesheet" href="css/bootstrap.min.css">
-  
-  
-  	<script src="lib/crafty-min.js"></script>
-  	<script src="lib/jquery-3.1.0.min.js"></script>
-  	<script src="lib/bootstrap.min.js"></script>
-  	<script src="lib/jquery.leanModal.min.js"></script>
-  	<script src="app/app.js"></script>
-  	<script src="app/components.js"></script>
-  	<script src="app/services/GameService.js"></script>
-  	<script src="app/helpers/NotificationHelper.js"></script>
-  	<script src="app/helpers/CraftyHelper.js"></script>
-  	<script src="app/helpers/LoadScreenHelper.js"></script>
-    <script src="app/helpers/MenuHelper.js"></script>
-    <script src="app/helpers/GeneralHelper.js"></script>
-  	<script>window.addEventListener('load', Splash.init);</script>
-  	<script type="text/javascript">
-  		$(document).ready(function() {
-  			Game.init();
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	        // Register menu buttons
-	        $("#b_get").click(MenuHelper.get);
-	        $("#b_start").click(MenuHelper.start);
-	        $("#b_promptMove").click(Game.promptMove);
-	        $("#b_promptSuggest").click(Game.promptSuggestion);
-	        $("#b_promptAccuse").click(Game.promptAccusation);
-	        $("#b_doMove").click(Game.doMove);
-	        $("#b_doSuggestion").click(Game.doSuggestion);
-	        $("#b_doDisprove").click(Game.doDisprove);
-  		});
-  	</script>
-  </head>
-  <body>
-    <div>
-      <div id="game"></div>
-      <div id="tail">
-        <div>{{ game log }}</div>
+  <title>Dashboard</title>
+
+  <link rel="stylesheet" href="css/HailToo.css">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="css/rdash.css" rel="stylesheet">
+  <script src="lib/crafty-min.js"></script>
+  <script src="lib/jquery-3.1.0.min.js"></script>
+  <script src="lib/bootstrap.min.js"></script>
+  <script src="lib/jquery.leanModal.min.js"></script>
+  <script src="app/app.js"></script>
+  <script src="app/components.js"></script>
+  <script src="app/services/GameService.js"></script>
+  <script src="app/helpers/NotificationHelper.js"></script>
+  <script src="app/helpers/CraftyHelper.js"></script>
+  <script src="app/helpers/LoadScreenHelper.js"></script>
+  <script src="app/helpers/MenuHelper.js"></script>
+  <script src="app/helpers/GeneralHelper.js"></script>
+  <script>window.addEventListener('load', Splash.init);</script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      Game.init();
+
+        // Register menu buttons
+        $("#b_get").click(MenuHelper.get);
+        $("#b_start").click(MenuHelper.start);
+        $("#b_promptMove").click(Game.promptMove);
+        $("#b_promptSuggest").click(Game.promptSuggestion);
+        $("#b_promptAccuse").click(Game.promptAccusation);
+        $("#b_doMove").click(Game.doMove);
+        $("#b_doSuggestion").click(Game.doSuggestion);
+        $("#b_doDisprove").click(Game.doDisprove);
+    });
+  </script>
+</head>
+<body class="hamburg">
+  <div id="page-wrapper" class="open">
+
+    <!-- Sidebar -->
+
+    <div id="sidebar-wrapper">
+      <ul class="sidebar">
+        <li class="sidebar-main">
+          <a href="#" id="b_get">
+            Get Game
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+          <a href="#" id="b_start">
+            Start Game
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+          <div id="tail">
+            <div>{{ game log }}</div>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <div class="col-xs-4">
+          <a href="https://github.com/HailToo" target="_blank">
+            Github
+          </a>
+        </div>
+        <div class="col-xs-4">
+          <a href="mailto:wwalke24@jhu.edu" target="_blank">
+            Contact
+          </a>
+        </div>
       </div>
     </div>
-    <ul id="cardList"></ul>
 
-	<!-- Buttons for testing -->
-    <button id="b_get">Get Game</button>
-    <button id="b_start">Start Game</button>
-    <!-- Button trigger modal 
-    <button type="button" data-toggle="modal" data-target="#hail_prompt">It's your turn</button>
-    <button type="button" data-toggle="modal" data-target="#hail_move">Move</button>
-    <button type="button" data-toggle="modal" data-target="#hail_suggestion">Suggest</button>
- 	-->
- 	
-  <!-- Main Player Prompt -->
+    <!-- End Sidebar -->
+
+    <div id="content-wrapper">
+      <div class="page-content">
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div>
+                    <div id="game"></div>
+                  </div>
+                  <div id="cardList" style="right:0px;">
+                        <div class="card">
+                          <img src="http://ec2-35-160-239-218.us-west-2.compute.amazonaws.com:8454/hail/images/Kitchen.png" alt="Avatar">
+                          <div class="container">
+                            <h4><b>Kitchen</b></h4>
+                          </div>
+                        </div>
+                        <div class="card">
+                          <img src="http://ec2-35-160-239-218.us-west-2.compute.amazonaws.com:8454/hail/images/Kitchen.png" alt="Avatar" style="width:100%">
+                          <div class="container">
+                            <h4><b>Kitchen</b></h4>
+                          </div>
+                        </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div><!-- End Page Content -->
+    </div><!-- End Content Wrapper -->
+  </div><!-- End Page Wrapper -->
   <div class="modal fade" id="hail_prompt" tabindex="-1" role="dialog" aria-labelledby="hail_promptLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -149,11 +204,5 @@
       </div>
     </div>
   </div>
-  
-  </body>
-  <footer style="bottom: 0px;position: fixed;display: block;right: 0px;background-color: #d8d8d8;width: 100%;height: 20px;">
-  	<div>
-  		<span id="version">{insert version here}</span>
-	</div>
-  </footer>
+</body>
 </html>

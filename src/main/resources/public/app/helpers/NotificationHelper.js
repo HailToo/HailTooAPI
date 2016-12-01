@@ -20,17 +20,20 @@ NotificationHelper = {
 		var $list = $('#cardList');
 		
 		$list
-	    .find('li')
+	    .find('div')
 	    .remove()
 	    .end();
 
 		$.each(cards, function(i, name) {
-			var $li = $('<li class="loading">').appendTo($list);
+			var $card = $('<div class="card loading">').appendTo($list);
 
-			$('<img>').appendTo($li).one('load', function() {
+			//var $li = $('<li class="loading">').appendTo($list);
+
+			$('<img>').appendTo($card).one('load', function() {
 				$li.removeClass('loading');
-			}).attr('src', "images/" + name + ".png")
-			.attr('style', 'width:100px; height:100px;');
+			}).attr('src', "images/" + name + ".png");
+
+			//$('<h4>').appendTo($card)
 		})
 	},
 	

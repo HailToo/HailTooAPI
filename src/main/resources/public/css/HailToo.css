@@ -1,10 +1,33 @@
-#cardList li {
-    list-style: none;
-    width: 100px;
-    height: 100px;
+#cardList {
+    /*list-style: none;
+    width: 60px;
+    height: 60px;
     float: left;
     margin-right: 20px;
-    background: #127F6F;
+    background: #127F6F;*/
+    display: flex;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 100px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.card img {
+    border-radius: 5px 5px 0 0;
+    width: 100%;
+}
+
+/* Add some padding inside the card container */
+.container {
+    padding: 2px 16px;
 }
 
 li.loading {
@@ -42,11 +65,13 @@ li.loading img {
 }
 
 #tail {
-    border: 1px solid blue;
-    height: 60px;
-    width: 350px;
+    border: 2px solid black;
+    height: 300px;
+    width: 100%;
     overflow: hidden;
     float: right;
+    border-radius: 4px;
+    background-color: #dfdfdf;
 }
 
 .modal-content {
