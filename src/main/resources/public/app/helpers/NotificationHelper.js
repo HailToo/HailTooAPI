@@ -30,10 +30,10 @@ NotificationHelper = {
 			//var $li = $('<li class="loading">').appendTo($list);
 
 			$('<img>').appendTo($card).one('load', function() {
-				$li.removeClass('loading');
+				$card.removeClass('loading');
 			}).attr('src', "images/" + name + ".png");
 
-			//$('<h4>').appendTo($card)
+			$('<p><b>' + name + '</b></p>').appendTo($card)
 		})
 	},
 	
