@@ -9,10 +9,13 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/rdash.css">
   
+  <!-- Third party libraries -->
   <script src="lib/crafty-min.js"></script>
   <script src="lib/jquery-3.1.0.min.js"></script>
   <script src="lib/bootstrap.min.js"></script>
   <script src="lib/jquery.leanModal.min.js"></script>
+  
+  <!-- HailToo application logic -->
   <script src="app/app.js"></script>
   <script src="app/components.js"></script>
   <script src="app/services/GameService.js"></script>
@@ -21,20 +24,16 @@
   <script src="app/helpers/LoadScreenHelper.js"></script>
   <script src="app/helpers/MenuHelper.js"></script>
   <script src="app/helpers/GeneralHelper.js"></script>
+  
+  <!-- On page-load, draw the game-board area and render the splash screen -->
   <script>window.addEventListener('load', Splash.init);</script>
+  
+  <!-- On page load, initialize the game itself and register any clickable buttons -->
   <script type="text/javascript">
     $(document).ready(function() {
       Game.init();
-
-        // Register menu buttons
-        $("#b_get").click(MenuHelper.get);
-        $("#b_start").click(MenuHelper.start);
-        $("#b_promptMove").click(Game.promptMove);
-        $("#b_promptSuggest").click(Game.promptSuggestion);
-        $("#b_promptAccuse").click(Game.promptAccusation);
-        $("#b_doMove").click(Game.doMove);
-        $("#b_doSuggestion").click(Game.doSuggestion);
-        $("#b_doDisprove").click(Game.doDisprove);
+      // Register menu buttons
+      $("#b_start").click(MenuHelper.start);
     });
   </script>
 </head>
@@ -47,12 +46,12 @@
       <ul class="sidebar">
         <li class="sidebar-main">
           <h2 style="color: white;">HailToo</h2>
+          <!-- Game event log where [most] game actions are noted -->
           <div id="tail">
             <div>Clue-less is ready!</div>
           </div>
-          <!-- <a href="#" id="b_get">
-            Get Game
-          </a> -->
+          
+          <!-- Button to start the game -->
           <a href="#" id="b_start">
             Start Game
           </a>
@@ -86,10 +85,11 @@
               <div class="widget">
                 <div class="widget-body">
                   <div>
+                    <!-- Game board is rendered here (#game) -->
                     <div id="game"></div>
                   </div>
-                  <div id="cardList" style="right:0px;">
-                  </div>
+                  <!-- Player's cards are rended here (#cardList) -->
+                  <div id="cardList" style="right:0px;"></div>
                 </div>
               </div>
           </div>
