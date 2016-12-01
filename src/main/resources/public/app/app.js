@@ -133,20 +133,9 @@ Game = {
 				Game.promptWait();
 			} else {
 				Game.prompt();
-				//Enable/disable action buttons
-				disableMove = gameState.currentPlayer.availableActions.indexOf('Move') == -1;
-				disableSuggest = gameState.currentPlayer.availableActions.indexOf('Suggest') == -1;
-				disableAccuse = gameState.currentPlayer.availableActions.indexOf('Accuse') == -1;
-				
-				$('#b_promptMove').prop('disabled', disableMove);
-				$('#b_promptSuggest').prop('disabled', disableSuggest);
-				$('#b_promptAccuse').prop('disabled', disableAccuse);
 			}
 		} else {
-			$('#hail_prompt').modal("hide");
-			$('#hail_suggestion').modal("hide");
-			$('#hail_move').modal("hide");
-			$('#hail_wait').modal("hide");
+			$('#hail_modal').modal("hide");
 			
 			//Check for available actions for self
 			for(var i = 0; i < gameState.players.length; ++i) {
@@ -171,70 +160,86 @@ Game = {
 	},
 	
 	prompt: function() {
-		//Splash.load_scene("Prompt");
+		console.log("Displaying prompt");
 		// Toggle main modal ON
-		$('#hail_prompt').modal("show");
+		$('#hail_modal').load('modals/prompt.html', function() {
+			//Enable/disable action buttons
+			$('#b_promptMove').prop('disabled', document.gameState.currentPlayer.availableActions.indexOf('Move') == -1);
+			$('#b_promptSuggest').prop('disabled', document.gameState.currentPlayer.availableActions.indexOf('Suggest') == -1);
+			$('#b_promptAccuse').prop('disabled', document.gameState.currentPlayer.availableActions.indexOf('Accuse') == -1);
+
+			$("#b_promptMove").click(Game.promptMove);
+	        $("#b_promptSuggest").click(Game.promptSuggestion);
+	        $("#b_promptAccuse").click(Game.promptAccusation);
+		});
+		$('#hail_modal').modal("show");
 	},
 	
 	promptMove: function() {
 		console.log("Displaying modal for user to MOVE their gamepiece.");
 		// Toggle main modal OFF
-		$('#hail_prompt').modal("hide");
+		//$('#hail_modal').modal("hide");
 		
-		// Toggle move modal ON
-		$('#hail_move').modal("show");
-		
-		// Get available moves, populate list
-		GameService.getMoves(document.gameState.name).done(function(data){
-			if (data !== null && data.length > 0) {
-				GeneralHelper.populateDropdown('select.moves', data);
-			} else {
-				console.log("no available moves were returned!");
-			}
+		$('#hail_modal').load('modals/move.html', function() {
+	        $("#b_doMove").click(Game.doMove);
+
+	        // Get available moves, populate list
+			GameService.getMoves(document.gameState.name).done(function(data){
+				if (data !== null && data.length > 0) {
+					GeneralHelper.populateDropdown('select.moves', data);
+				} else {
+					console.log("no available moves were returned!");
+				}
+			});
 		});
-		
-		//
 	},
 	
 	promptSuggestion: function() {
 		console.log("Displaying modal for user to MAKE A SUGGESTION at solving the mystery.");
 		// Toggle main modal OFF
-		$('#hail_prompt').modal("hide");
+		//$('#hail_modal').modal("hide");
 		
-		// Toggle suggestion modal ON
-		$('#hail_suggestion').modal("show");
-		
-		// TODO - pre-load current room in list.
-		GeneralHelper.populateDropdown('select.rooms', [ 'current room']);
-		// Get available suspects, populate list
-		GameService.characters().done(function(data){
-			GeneralHelper.populateDropdown('select.suspects', data);
-		});
+		$('#hail_modal').load('modals/suggestion.html', function() {
+	        $("#b_doSuggestion").click(Game.doSuggestion);
 
-		// Get available weapons, populate list
-		GameService.weapons().done(function(data){
-			GeneralHelper.populateDropdown('select.weapons', data);
+	        // TODO - pre-load current room in list.
+			GeneralHelper.populateDropdown('select.rooms', [ 'current room']);
+			// Get available suspects, populate list
+			GameService.characters().done(function(data){
+				GeneralHelper.populateDropdown('select.suspects', data);
+			});
+
+			// Get available weapons, populate list
+			GameService.weapons().done(function(data){
+				GeneralHelper.populateDropdown('select.weapons', data);
+			});
 		});
 	},
 	
 	promptDisprove: function() {
 		console.log("Displaying modal for user to DISPROVE A SUGGESTION at solving the mystery.");
 		
-		// Toggle disprove modal ON
-		$('#hail_disprove').modal("show");
-		
-		var challengeCards = [document.gameState.currentSuggestion.room, document.gameState.currentSuggestion.suspect, document.gameState.currentSuggestion.weapon];
-		for(var i = 0; i < challengeCards.length; ++i) {
-			if(Game._user.cards.indexOf(challengeCards[i]) === -1) {
-				challengeCards.splice(i, 1);
-				--i;
+		$('#hail_modal').load('modals/disprove.html', function() {
+	        $("#b_doDisprove").click(Game.doDisprove);
+
+	        var challengeCards = [document.gameState.currentSuggestion.room, document.gameState.currentSuggestion.suspect, document.gameState.currentSuggestion.weapon];
+			for(var i = 0; i < challengeCards.length; ++i) {
+				if(Game._user.cards.indexOf(challengeCards[i]) === -1) {
+					challengeCards.splice(i, 1);
+					--i;
+				}
 			}
-		}
-		if (challengeCards.length === 0) {
-			challengeCards.push('Cannot disprove');
-		}
+			if (challengeCards.length === 0) {
+				challengeCards.push('Cannot disprove');
+			}
+			
+			GeneralHelper.populateDropdown('select.challenge', challengeCards);
+		});
+
+		// Toggle disprove modal ON
+		$('#hail_modal').modal("show");
 		
-		GeneralHelper.populateDropdown('select.challenge', challengeCards);
+		
 	},
 	
 	promptAccusation: function() {
@@ -242,11 +247,7 @@ Game = {
 	},
 	
 	promptWait: function() {
-		$('#hail_prompt').modal("hide");
-		$('#hail_suggestion').modal("hide");
-		$('#hail_disprove').modal("hide");
-		$('#hail_move').modal("hide");
-		$('#hail_wait').modal("show");
+		$('#hail_modal').load('modals/wait.html');
 	},
 	
 	doMove: function() {
@@ -254,7 +255,7 @@ Game = {
 		var moveTo = $('select.moves').val();
 		GameService.move(document.gameState.name, moveTo).done(function(data) {
 			if (data) {
-				$('#hail_move').modal("hide");
+				$('#hail_modal').modal("hide");
 				console.log("user has moved!")
 			}
 		});
@@ -289,7 +290,7 @@ Game = {
 		GameService.disprove(document.gameState.name, challengeItem).done(function(data) {
 			if (data) {
 				console.log("disproval submitted.");
-				$('#hail_disprove').modal("hide");
+				$('#hail_modal').modal("hide");
 			}
 		});
 	}
