@@ -243,7 +243,23 @@ Game = {
 	},
 	
 	promptAccusation: function() {
-		//send up guess
+		console.log("Displaying modal for user to MAKE AN ACCUSATION at solving the mystery.");
+		
+		$('#hail_modal').load('modals/accusation.html', function() {
+	        $("#b_doAccusation").click(Game.doAccusation);
+
+	        // TODO - pre-load current room in list.
+			GeneralHelper.populateDropdown('select.rooms', ['current room']);
+			// Get available suspects, populate list
+			GameService.characters().done(function(data){
+				GeneralHelper.populateDropdown('select.suspects', data);
+			});
+
+			// Get available weapons, populate list
+			GameService.weapons().done(function(data){
+				GeneralHelper.populateDropdown('select.weapons', data);
+			});
+		});
 	},
 	
 	promptWait: function() {
@@ -293,6 +309,28 @@ Game = {
 				$('#hail_modal').modal("hide");
 			}
 		});
-	}
+	},
 	
+	doAccusation: function() {
+		// Get user's choices
+		var room = document.gameState.board.locations.filter(function(l) { 
+			for(var i = 0; i < l.occupants.length; ++i) {
+				if(l.occupants[i].character === Game._user.character) {
+					return l;
+				}
+			}
+		});
+		var weapon = $('select.weapons').val();
+		var suspect = $('select.suspects').val();
+		
+		GameService.accuse(document.gameState.name, room[0].name, weapon, suspect).done(function(data) {
+			if (data) {
+				console.log("player guessed successfully.");
+			} else {
+				//TODO: disable "accuse" button.
+				console.log("player guessed incorrectly.");
+			}
+		});
+		
+	}	
 }
