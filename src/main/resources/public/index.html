@@ -1,159 +1,105 @@
 <html>
-  <head>
-	<link rel="stylesheet" href="css/HailToo.css">
-  	<link rel="stylesheet" href="css/bootstrap.min.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Clue-less by HailToo</title>
+
+  <link rel="stylesheet" href="css/HailToo.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/rdash.css">
   
-  
-  	<script src="lib/crafty-min.js"></script>
-  	<script src="lib/jquery-3.1.0.min.js"></script>
-  	<script src="lib/bootstrap.min.js"></script>
-  	<script src="lib/jquery.leanModal.min.js"></script>
-  	<script src="app/app.js"></script>
-  	<script src="app/components.js"></script>
-  	<script src="app/services/GameService.js"></script>
-  	<script src="app/helpers/NotificationHelper.js"></script>
-  	<script src="app/helpers/CraftyHelper.js"></script>
-  	<script src="app/helpers/LoadScreenHelper.js"></script>
-    <script src="app/helpers/MenuHelper.js"></script>
-    <script src="app/helpers/GeneralHelper.js"></script>
-  	<script>window.addEventListener('load', Splash.init);</script>
-  	<script type="text/javascript">
-  		$(document).ready(function() {
-  			Game.init();
+  <script src="lib/crafty-min.js"></script>
+  <script src="lib/jquery-3.1.0.min.js"></script>
+  <script src="lib/bootstrap.min.js"></script>
+  <script src="lib/jquery.leanModal.min.js"></script>
+  <script src="app/app.js"></script>
+  <script src="app/components.js"></script>
+  <script src="app/services/GameService.js"></script>
+  <script src="app/helpers/NotificationHelper.js"></script>
+  <script src="app/helpers/CraftyHelper.js"></script>
+  <script src="app/helpers/LoadScreenHelper.js"></script>
+  <script src="app/helpers/MenuHelper.js"></script>
+  <script src="app/helpers/GeneralHelper.js"></script>
+  <script>window.addEventListener('load', Splash.init);</script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      Game.init();
 
-	        // Register menu buttons
-	        $("#b_get").click(MenuHelper.get);
-	        $("#b_start").click(MenuHelper.start);
-	        $("#b_promptMove").click(Game.promptMove);
-	        $("#b_promptSuggest").click(Game.promptSuggestion);
-	        $("#b_promptAccuse").click(Game.promptAccusation);
-	        $("#b_doMove").click(Game.doMove);
-	        $("#b_doSuggestion").click(Game.doSuggestion);
-	        $("#b_doDisprove").click(Game.doDisprove);
-  		});
-  	</script>
-  </head>
-  <body>
-  	<div>
-		<div id="game"></div>
-		<div id="tail">
-		    <div>{{ game log }}</div>
-		</div>
-	</div>
-    <ul id="cardList"></ul>
+        // Register menu buttons
+        $("#b_get").click(MenuHelper.get);
+        $("#b_start").click(MenuHelper.start);
+        $("#b_promptMove").click(Game.promptMove);
+        $("#b_promptSuggest").click(Game.promptSuggestion);
+        $("#b_promptAccuse").click(Game.promptAccusation);
+        $("#b_doMove").click(Game.doMove);
+        $("#b_doSuggestion").click(Game.doSuggestion);
+        $("#b_doDisprove").click(Game.doDisprove);
+    });
+  </script>
+</head>
+<body class="hamburg">
+  <div id="page-wrapper" class="open">
 
-	<!-- Buttons for testing -->
-    <button id="b_get">Get Game</button>
-    <button id="b_start">Start Game</button>
-    <!-- Button trigger modal 
-    <button type="button" data-toggle="modal" data-target="#hail_prompt">It's your turn</button>
-    <button type="button" data-toggle="modal" data-target="#hail_move">Move</button>
-    <button type="button" data-toggle="modal" data-target="#hail_suggestion">Suggest</button>
- 	-->
- 	
-  <!-- Main Player Prompt -->
-  <div class="modal fade" id="hail_prompt" tabindex="-1" role="dialog" aria-labelledby="hail_promptLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="hail_promptLabel"></h4>
+    <!-- Sidebar -->
+
+    <div id="sidebar-wrapper">
+      <ul class="sidebar">
+        <li class="sidebar-main">
+          <h2 style="color: white;">HailToo</h2>
+          <div id="tail">
+            <div>Clue-less is ready!</div>
+          </div>
+          <!-- <a href="#" id="b_get">
+            Get Game
+          </a> -->
+          <a href="#" id="b_start">
+            Start Game
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <div class="col-xs-4">
+          <a href="https://github.com/HailToo" target="_blank">
+            Github
+          </a>
         </div>
-        <div class="modal-body">
-          <h1>It's your turn...</h1>
+        <div class="col-xs-4">
+          <a href="mailto:wwalke24@jhu.edu" target="_blank">
+            Contact
+          </a>
         </div>
-        <div class="modal-footer" style="text-align: center;">
-          <button id="b_promptMove" type="button">Move?</button>
-          <button id="b_promptSuggest" type="button">Suggest</button>
-          <button id="b_promptAccuse" type="button">Accuse!</button>
+        <div class="col-xs-4">
+          <a id="version" style="color: white; font-size: x-small;">{version}</a>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Move Prompt -->
-  <div class="modal fade" id="hail_move" tabindex="-1" role="dialog" aria-labelledby="hail_moveLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="hail_moveLabel"></h4>
-        </div>
-        <div class="modal-body">
-          <p> todo, show options</p>
-          <select class="moves">
-          </select>
-        </div>
-        <div class="modal-footer" style="text-align: center;">
-          <button id="b_doMove" type="button">Move</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- End Sidebar -->
 
-  <!-- Suggestion Prompt -->
-  <div class="modal fade" id="hail_suggestion" tabindex="-1" role="dialog" aria-labelledby="hail_suggestionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="hail_suggestionLabel"></h4>
-        </div>
-        <div class="modal-body">
-          <p> todo, preloaded room</p>
-          <select class="rooms"></select>
-          <p> todo, show options - suspect</p>
-          <select class="suspects"></select>
-          <p> todo, show options - weapon</p>
-          <select class="weapons"></select>
-        </div>
-        <div class="modal-footer" style="text-align: center;">
-          <button id="b_doSuggestion" type="button">Suggest</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Disproval Prompt -->
-  <div class="modal fade" id="hail_disprove" tabindex="-1" role="dialog" aria-labelledby="hail_disproveLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="hail_disproveLabel"></h4>
-        </div>
-        <div class="modal-body">
-          <p> todo, preloaded challenge cards</p>
-          <select class="challenge"></select>
-        </div>
-        <div class="modal-footer" style="text-align: center;">
-          <button id="b_doDisprove" type="button">Submit</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <div id="content-wrapper">
+      <div class="page-content">
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div>
+                    <div id="game"></div>
+                  </div>
+                  <div id="cardList" style="right:0px;">
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div><!-- End Page Content -->
+    </div><!-- End Content Wrapper -->
+  </div><!-- End Page Wrapper -->
 
-<!-- Waiting Prompt -->
-  <div class="modal fade" id="hail_wait" tabindex="-1" role="dialog" aria-labelledby="hail_waitLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="hail_waitLabel"></h4>
-        </div>
-        <div class="modal-body">
-          <p> Waiting for another user to disprove your suggestion... </p>
-        </div>
-        <div class="modal-footer" style="text-align: center;">
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  </body>
-  <footer style="bottom: 0px;position: fixed;display: block;right: 0px;background-color: #d8d8d8;width: 100%;height: 20px;">
-  	<div>
-  		<span id="version">{insert version here}</span>
-	</div>
-  </footer>
+  <!-- Modal window -->
+  <div class="modal fade" id="hail_modal" tabindex="-1" role="dialog" aria-labelledby="hail_titleLabel" aria-hidden="true">
+  </div> <!-- End Modal window -->
+
+</body>
 </html>
