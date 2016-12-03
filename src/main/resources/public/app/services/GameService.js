@@ -106,5 +106,13 @@ GameService = {
 			method: 'POST',
 			data: { gameGuid: gameGuid, disprovingItem: challengeItem }
 		});
+	},
+	
+	accuse: function(gameGuid, room, weapon, suspect) {
+		return GameService.ajax({
+			url: "api/game/" + gameGuid + "/accuse",
+			method: 'POST',
+			data: { gameGuid: gameGuid, room: room, weapon: weapon, suspect: suspect }
+		});
 	}
 };

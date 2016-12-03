@@ -43,7 +43,9 @@ public class Game {
 		Active,
 		
 		// Solution proposed, waiting for player to disprove
-		Waiting
+		Waiting,
+		
+		Complete
 	};
 	
 	public Status status;
@@ -55,9 +57,11 @@ public class Game {
 		User ret = null;
 		if (players.size() > 0) {
 			ret = players.get(currentMove % players.size());
-			if (ret.availableActions.size() == 0) {
+			if (ret.availableActions.size() == 0 && ret.isActive) {
 				ret.availableActions.add(ACTION.Move);
-				ret.availableActions.add(ACTION.Accuse);
+				if (this.board.getLocation(ret.character).isRoom) {
+					ret.availableActions.add(ACTION.Accuse);
+				}
 			}
 		}		
 		
@@ -73,7 +77,6 @@ public class Game {
 		board = new Board();
 		players = new ArrayList<User>();
 		status = Status.Inactive;
-		//messages = new TreeMap<Date, String>();
 		messages = new ArrayList<String>();
 	}
 	
@@ -250,10 +253,23 @@ public class Game {
 		}
 		
 		// Next player can always move
-		User nextPlayer = getFollowingPlayer(this, this.getCurrentPlayer());
-		nextPlayer.availableActions.add(ACTION.Move);
-		nextPlayer.availableActions.add(ACTION.Accuse);
-		currentMove++;
+		User nextPlayer = null;
+		do {
+			nextPlayer = getFollowingPlayer(this, this.getCurrentPlayer());
+			if (nextPlayer.isActive) {
+				nextPlayer.availableActions.add(ACTION.Move);
+				if (this.board.getLocation(nextPlayer.character).isRoom) {
+					nextPlayer.availableActions.add(ACTION.Accuse);
+				}
+			}
+			currentMove++;
+		} while (!nextPlayer.isActive);
+		
+		if (activeUserCount(this) == 1) {
+			// Last player remaining is the winner (by default)
+			this.status = Status.Complete;
+			messages.add(String.format("[ %s ] has won the game (by default)!", nextPlayer.name));
+		}
 	}
 	
 	public static User getFollowingPlayer(Game game, User base) {
@@ -265,4 +281,16 @@ public class Game {
     	}
     	return game.players.get(nextIndex);
     }
+	
+	public static int activeUserCount(Game game) {
+		int ret = 0;
+		
+		for(int i = 0; i < game.players.size(); ++i) {
+			if (game.players.get(i).isActive) {
+				ret++;
+			}
+		}
+		
+		return ret;
+	}
 }
