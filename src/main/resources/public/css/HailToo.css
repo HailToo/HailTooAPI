@@ -85,3 +85,8 @@ li.loading img {
     min-width: 200px; 
     max-width: 400px;
 }
+
+button[disabled] {
+	background-color: #dfdfdf;
+    border-style: inset;
+}

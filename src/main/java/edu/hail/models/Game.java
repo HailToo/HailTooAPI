@@ -77,7 +77,6 @@ public class Game {
 		board = new Board();
 		players = new ArrayList<User>();
 		status = Status.Inactive;
-		//messages = new TreeMap<Date, String>();
 		messages = new ArrayList<String>();
 	}
 	
@@ -253,14 +252,15 @@ public class Game {
 			u.availableActions.remove(ACTION.Disprove);
 		}
 		
-		User originalUser = this.getCurrentPlayer();
 		// Next player can always move
 		User nextPlayer = null;
 		do {
 			nextPlayer = getFollowingPlayer(this, this.getCurrentPlayer());
 			if (nextPlayer.isActive) {
 				nextPlayer.availableActions.add(ACTION.Move);
-				nextPlayer.availableActions.add(ACTION.Accuse);
+				if (this.board.getLocation(nextPlayer.character).isRoom) {
+					nextPlayer.availableActions.add(ACTION.Accuse);
+				}
 			}
 			currentMove++;
 		} while (!nextPlayer.isActive);
