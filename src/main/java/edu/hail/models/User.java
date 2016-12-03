@@ -12,6 +12,7 @@ public class User {
     public Board.CHARACTER character;
     public List<String> cards = new ArrayList<String>();
     public List<ACTION> availableActions = new ArrayList<ACTION>();
+    public boolean isActive = true;
     
     public User(String name, String email) {
         this.name = name;

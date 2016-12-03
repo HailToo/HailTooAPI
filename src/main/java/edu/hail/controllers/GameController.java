@@ -221,25 +221,26 @@ public class GameController {
 	 * @param suspectName
 	 * @return
 	 */
-    @RequestMapping(value="/game/{gameGuid}/solve", method = RequestMethod.POST)
-    public @ResponseBody boolean solve(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam Board.AREA room, @RequestParam Board.WEAPON weapon, @RequestParam Board.CHARACTER suspect) {
+    @RequestMapping(value="/game/{gameGuid}/accuse", method = RequestMethod.POST)
+    public @ResponseBody boolean accuse(HttpServletRequest req, @PathVariable String gameGuid, @RequestParam Board.AREA room, @RequestParam Board.WEAPON weapon, @RequestParam Board.CHARACTER suspect) {
     	boolean ret = false;
     	Game game = (Game) db.get("games").get(gameGuid);
     	User user = game.getPlayer(req);
     	ret = game.solve(room, weapon, suspect);
     	
-    	//game.messages.put(new Date(), String.format("[ %s ] has suggested [ %s, %s, %s ]", user.name, room, weapon, suspect));
     	game.messages.add(String.format("[ %s ] has suggested [ %s, %s, %s ]", user.name, room, weapon, suspect));
-    	
     	if (!ret) {
-    		game.status = Status.Waiting;
-    		game.messages.add("Can anyone prove them wrong?!");
+    		// Player is eliminated!
+    		user.isActive = false;
+    		game.messages.add(String.format("[ %s ] has been eliminated from the game!", user.name));
+    		game.advanceGame();
     	} else {
+    		// Game is over!
+    		game.status = Status.Complete;
     		game.messages.add(String.format("[ %s ] has won the game!", user.name));
     	}
     	
     	return ret;
-    	//TODO if true - game is finished, notify all players.
     }
     
     @RequestMapping(value="/game/{gameGuid}/move", method = RequestMethod.GET)
@@ -271,6 +272,7 @@ public class GameController {
     		// User can make suggestion if move ends in a room.
     		if (game.board.getLocation(area).isRoom) {
     			user.availableActions.add(ACTION.Suggest);
+    			user.availableActions.add(ACTION.Accuse);
     		} else {
     			game.advanceGame();
     		}
@@ -316,6 +318,7 @@ public class GameController {
     		//followingUser.availableActions.clear();
     		if (followingUser.character.equals(game.currentSuggestion.suggester.character)) {
 				// We've cycled through all the players without disproving the suggestion!
+    			followingUser.availableActions.remove(ACTION.Wait);
     			followingUser.availableActions.add(ACTION.Accuse);				
 				game.messages.add(String.format("Suggestion by [ %s ] cannot be disproven...", followingUser.name));
 			} else {    				

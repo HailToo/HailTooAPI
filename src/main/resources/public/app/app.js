@@ -128,7 +128,10 @@ Game = {
 		document.gameState = gameState;
 		
 		//Prompt player for move/suggestion
-		if (gameState.status === "Active" && Game._user.character === gameState.currentPlayer.character) {
+		if (gameState.status === "Complete") {
+			Game.complete();
+		}
+		else if (gameState.status === "Active" && Game._user.character === gameState.currentPlayer.character) {
 			if (gameState.currentPlayer.availableActions.indexOf('Wait') >= 0) {
 				Game.promptWait();
 			} else {
@@ -172,6 +175,13 @@ Game = {
 	        $("#b_promptSuggest").click(Game.promptSuggestion);
 	        $("#b_promptAccuse").click(Game.promptAccusation);
 		});
+		$('#hail_modal').modal("show");
+	},
+	
+	complete: function() {
+		console.log("Game is over.");
+		// Toggle main modal ON
+		$('#hail_modal').load('modals/over.html');
 		$('#hail_modal').modal("show");
 	},
 	
