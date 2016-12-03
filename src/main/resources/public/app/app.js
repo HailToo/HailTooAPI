@@ -4,6 +4,7 @@ Game = {
 	_hallways: [],
 	_suspects: [],
 	isLoaded: false,
+	pollRate: 3000,
 		
 	// Gameboard layout
 	board: {
@@ -54,12 +55,40 @@ Game = {
 			return r.attr("name") === areaName;
 		});
 		
-		//TODO: adjust if multiple occupants in the room.
 		if(targetRoom.length === 1) {
 			targetRoom = targetRoom[0];
 			//move player within the bounds of this room.
 			var targetX = (targetRoom.x + (targetRoom.w / 2)) / Game.board.tile.width;
 			var targetY = targetRoom.y / Game.board.tile.height;
+			
+			//adjust if another occupant is present.
+			for (var i = 0; i < document.gameState.board.locations.length; ++i) {
+				if (document.gameState.board.locations[i].name === areaName && document.gameState.board.locations[i].occupants.length > 0) {
+					switch (document.gameState.board.locations[i].occupants.length) {
+					case 1:
+						targetX += -4;
+						targetY += -1;
+						break;
+					case 2:
+						targetX += -4;
+						targetY += 3;
+						break;
+					case 3:
+						targetX += 2;
+						targetY += 3;
+						break;
+					case 4:
+						targetX += -1;
+						targetY += 4;
+						break;
+					case 5:
+						targetX += -2;
+						targetY += -1;
+						break;
+					}
+				}
+			}
+			
 			actor.at(targetX, targetY);
 		} else {
 			//Check hallways
@@ -92,7 +121,7 @@ Game = {
 				console.log("error: " + err);
 			}
 			
-			setTimeout(Game.pollGameState, 3000);
+			setTimeout(Game.pollGameState, Game.pollRate);
 		});
 	},
 	
@@ -342,5 +371,5 @@ Game = {
 			}
 		});
 		
-	}	
+	}
 }
