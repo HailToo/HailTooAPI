@@ -64,7 +64,16 @@ Game = {
 			//adjust if another occupant is present.
 			for (var i = 0; i < document.gameState.board.locations.length; ++i) {
 				if (document.gameState.board.locations[i].name === areaName && document.gameState.board.locations[i].occupants.length > 0) {
-					switch (document.gameState.board.locations[i].occupants.length) {
+					var occupantIndex = 0;
+					
+					for (var j = 0; j < document.gameState.board.locations[i].occupants.length; ++j) {
+						if (document.gameState.board.locations[i].occupants[j].character === actor.name) {
+							occupantIndex = j;
+							break;
+						}
+					}
+					
+					switch (occupantIndex) {
 					case 1:
 						targetX += -4;
 						targetY += -1;

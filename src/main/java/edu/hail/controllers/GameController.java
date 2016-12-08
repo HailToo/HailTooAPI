@@ -274,6 +274,7 @@ public class GameController {
     			user.availableActions.add(ACTION.Suggest);
     			user.availableActions.add(ACTION.Accuse);
     		} else {
+    			user.availableActions.remove(ACTION.Suggest);
     			game.advanceGame();
     		}
     		
@@ -340,6 +341,8 @@ public class GameController {
     	if (!user.equals(game.getCurrentPlayer())) {
     		throw new Exception("User not authorized to make suggestion at this time.");
     	}
+    	
+    	game.messages.add(String.format("[ %s ] suggested: [%s] in the [%s] with a [%s]", user.name, suspect, room, weapon));
     	
     	Suggestion suggestion = new Suggestion();
     	suggestion.suggester = user;
